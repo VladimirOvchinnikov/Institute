@@ -1,0 +1,6 @@
+CREATE TABLE group (
+    id INTEGER IDENTITY NOT NULL,
+    number INTEGER NOT NULL,
+    faculty VARCHAR(25) NOT NULL,
+    PRIMARY KEY(id)
+)
