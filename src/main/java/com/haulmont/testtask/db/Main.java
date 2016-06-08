@@ -1,5 +1,7 @@
 package com.haulmont.testtask.db;
 
+import com.haulmont.testtask.db.init.InitializtionDB;
+
 /**
  * Created by Leon on 08.06.2016.
  */
@@ -11,5 +13,6 @@ public class Main {
         } catch (CriticalException e) {
             System.err.println(e.getMessage());
         }*/
+        InitializtionDB.createFile();
     }
 }

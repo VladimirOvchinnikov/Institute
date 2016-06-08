@@ -1,7 +1,12 @@
 package com.haulmont.testtask.db.init;
 
+import com.haulmont.testtask.db.ConnectDB;
+import com.haulmont.testtask.exception.CriticalException;
+
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Scanner;
 
 /**
@@ -18,7 +23,20 @@ public class InitializtionDB {
                 script.append(" ");
             }
         } catch (IOException ioe) {
+            System.err.println("Error");
+        }
 
+        try {
+            ConnectDB connectDB = new ConnectDB();
+            connectDB.connect();
+            try (Statement statement = connectDB.getConnection().createStatement()){
+                statement.execute(script.toString());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            connectDB.close();
+        } catch (CriticalException e) {
+            e.printStackTrace();
         }
 
 
