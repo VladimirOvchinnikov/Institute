@@ -8,11 +8,14 @@ import com.haulmont.testtask.db.init.InitializtionDB;
 public class Main {
 
     public static void main(String[] args){
-        /*try {
-            ConnectDB.connect();
-        } catch (CriticalException e) {
-            System.err.println(e.getMessage());
-        }*/
-        InitializtionDB.createFile();
+        try {
+            /*ConnectDB.getInstance();
+            ConnectDB.getInstance().getConnection();
+            ConnectDB.getInstance().getConnection();
+            ConnectDB.getInstance().close();*/
+            InitializtionDB.createFile();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

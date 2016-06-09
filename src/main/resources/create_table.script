@@ -1,11 +1,11 @@
-CREATE TABLE group_student (
+CREATE TABLE IF NOT EXISTS groups(
     id INTEGER IDENTITY NOT NULL,
     number INTEGER NOT NULL,
     faculty VARCHAR(25) NOT NULL,
     PRIMARY KEY(id)
 )
 
-CREATE TABLE student (
+CREATE TABLE IF NOT EXISTS students (
     id INTEGER IDENTITY NOT NULL,
     first_name VARCHAR(25) NOT NULL,
     middle_name VARCHAR(25) NOT NULL,
@@ -13,5 +13,5 @@ CREATE TABLE student (
     birth_day DATE NOT NULL,
     group_id INTEGER NOT NULL,
     PRIMARY KEY(id),
-    FOREIGN KEY (group_id) REFERENCES group_student(id) ON DELETE
+    FOREIGN KEY (group_id) REFERENCES groups(id)
 )
