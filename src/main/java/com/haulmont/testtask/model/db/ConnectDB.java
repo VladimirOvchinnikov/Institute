@@ -1,4 +1,4 @@
-package com.haulmont.testtask.db;
+package com.haulmont.testtask.model.db;
 
 import com.haulmont.testtask.exception.CriticalException;
 

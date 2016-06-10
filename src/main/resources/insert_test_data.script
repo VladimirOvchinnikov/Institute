@@ -1,0 +1,8 @@
+INSERT INTO GROUPS(number, faculty) values(1, 'Information');
+INSERT INTO GROUPS (number, faculty) values(2, 'Economy');
+INSERT INTO GROUPS (number, faculty) values(3, 'Biology');
+
+INSERT INTO STUDENTS (first_name, middle_name, last_name, birth_day, group_id) values('Vasia', 'Vasilevich', 'Vasilev', '1991-10-06', 0);
+INSERT INTO STUDENTS (first_name, middle_name, last_name, birth_day, group_id) values('Peter', 'Petrovich', 'Petrov', '1992-11-16', 0);
+INSERT INTO STUDENTS (first_name, middle_name, last_name, birth_day, group_id) values('Vova', 'Vladimirovich', 'Vladimirov', '1992-11-16', 1);
+
