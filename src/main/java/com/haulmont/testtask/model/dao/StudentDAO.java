@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Created by Leon on 12.06.2016.
  */
-public class StudentDAO<E extends Entity, T extends Student> implements DAO<E, T> {
+public class StudentDAO<E extends Entity, T extends Student> extends AbstractDAO<E,T> implements DAO<E, T> {
 
     public Map<Long, Integer> selectNumberGroupStudents(List<T> list) {//это для selectAll
         StringBuilder sql = new StringBuilder("SELECT STUDENTS.ID AS ID, GROUPS.NUMBER AS NUMBER FROM STUDENTS JOIN GROUPS ON STUDENTS.GROUP_ID = GROUPS.ID");
@@ -66,11 +66,11 @@ public class StudentDAO<E extends Entity, T extends Student> implements DAO<E, T
     }
 
     @Override
-    public String sqlSelectBuilder(List<E> entities) {
+    protected String getTextQuerySelect(int size) {
         StringBuilder sql = new StringBuilder("SELECT * FROM STUDENTS");
-        if (entities.size() > 0) {
+        if (size > 0) {
             sql.append(" WHERE ID IN (");
-            for (int i = 0; i < entities.size() - 1; i++) {
+            for (int i = 0; i < size - 1; i++) {
                 sql.append("?, ");
             }
             sql.append("?)");
@@ -79,22 +79,22 @@ public class StudentDAO<E extends Entity, T extends Student> implements DAO<E, T
         return sql.toString();
     }
 
-//    @Override
-//    public T getEntity(ResultSet rs) throws SQLException {
-//        T student = (T) new Student();
-//        student.setId(rs.getLong("id"));
-//        student.setFirstName(rs.getString("first_name"));
-//        student.setMiddleName(rs.getString("middle_name"));
-//        student.setLastName(rs.getString("last_name"));
-//        student.setBirthDay(rs.getDate("birth_day"));
-//        student.setGroupId(rs.getLong("group_id"));
-//        return student;
-//    }
+    @Override
+    protected T getEntity(ResultSet rs) throws SQLException {
+        T student = (T) new Student();
+        student.setId(rs.getLong("id"));
+        student.setFirstName(rs.getString("first_name"));
+        student.setMiddleName(rs.getString("middle_name"));
+        student.setLastName(rs.getString("last_name"));
+        student.setBirthDay(rs.getDate("birth_day"));
+        student.setGroupId(rs.getLong("group_id"));
+        return student;
+    }
 
     @Override
-    public String sqlDeleteBuilder(List<E> entities) {
+    protected String getTextQueryDelete(int size) {
         StringBuilder sql = new StringBuilder("DELETE FROM STUDENTS WHERE ID in (");
-        for (int i = 0; i < entities.size() - 1; i++) {
+        for (int i = 0; i < size - 1; i++) {
             sql.append("?, ");
         }
         sql.append("?);");
@@ -102,28 +102,28 @@ public class StudentDAO<E extends Entity, T extends Student> implements DAO<E, T
     }
 
     @Override
-    public String getUpdateSql() {
+    protected String getTextQueryUpdate() {
         return "SET FIRST_NAME = ? , MIDDLE_NAME = ?, LAST_NAME = ?, BIRTH_DAY = ?, GROUP_ID = ? WHERE ID = ?";
     }
 
     @Override
-    public void setParametersUpdate(PreparedStatement ps, T t) throws SQLException {
-        //setParametersInsert(ps,t);
+    protected void setParametersUpdate(PreparedStatement ps, T t) throws SQLException {
+        setParametersInsert(ps,t);
         ps.setLong(6, t.getId());
     }
 
     @Override
-    public String getInsertSql() {
+    protected String getTextQueryInsert() {
         return "INSERT INTO STUDENTS (FIRST_NAME, MIDDLE_NAME, LAST_NAME, BIRTH_DAY, GROUP_ID) values(?, ?, ?, ?, ?);";
     }
 
-//    @Override
-//    public void setParametersInsert(PreparedStatement ps, T t) throws SQLException {
-//        ps.setString(1, t.getFirstName());
-//        ps.setString(2, t.getMiddleName());
-//        ps.setString(3, t.getLastName());
-//        ps.setDate(4, new Date(t.getBirthDay().getTime()));
-//        ps.setLong(5, t.getGroupId());
-//
-//    }
+    @Override
+    protected void setParametersInsert(PreparedStatement ps, T t) throws SQLException {
+        ps.setString(1, t.getFirstName());
+        ps.setString(2, t.getMiddleName());
+        ps.setString(3, t.getLastName());
+        ps.setDate(4, new Date(t.getBirthDay().getTime()));
+        ps.setLong(5, t.getGroupId());
+
+    }
 }

@@ -1,10 +1,14 @@
 package com.haulmont.testtask.controller;
 
 import com.google.gwt.thirdparty.guava.common.collect.Lists;
+import com.haulmont.testtask.controller.adapter.StubStudentToView;
+import com.haulmont.testtask.controller.view.GroupView;
 import com.haulmont.testtask.controller.view.StudentView;
 import com.haulmont.testtask.exception.CriticalException;
 import com.haulmont.testtask.model.db.ConnectDB;
+import com.haulmont.testtask.model.entity.Student;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -81,6 +85,31 @@ public class MainController {
 //        }
 //        ConnectDB.getInstance().close();
 
+//        List<GroupView> views = Lists.newArrayList();
+//        List<GroupView> res =  GroupController.select(views);
+//        for(GroupView group: res){
+//            System.out.println(group);
+//        }
+//
+//        List<StudentView> views1 = Lists.newArrayList();
+//        views1 = StudentController.select(views1);
+//        for(StudentView view: views1){
+//            System.out.println(view);
+//        }
+//        ConnectDB.getInstance().close();
+
+        Student student = new Student(-1L, "king", "King", "KinG", new Date(), -2L);
+        StudentView sv = StubStudentToView.convert(student, (i) -> new StudentView(i.getId(), i.getFirstName(), i.getMiddleName(), i.getLastName(), i.getBirthDay(), i.getGroupId(),-3));
+        System.out.println(sv);
+
+        List<Student> list = Lists.newArrayList();
+        list.add(student);
+        Student student1 = new Student(-2L, "cat", "Cat", "caT", new Date(), -10L);
+        list.add(student1);
+        List<StudentView> views= StubStudentToView.convert1(list, (i) -> new StudentView(i.getId(), i.getFirstName(), i.getMiddleName(), i.getLastName(), i.getBirthDay(), i.getGroupId(),-4));
+        for(StudentView view: views){
+            System.out.println(view);
+        }
 
     }
 }

@@ -3,7 +3,9 @@ package com.haulmont.testtask.controller;
 import com.google.gwt.thirdparty.guava.common.collect.Lists;
 import com.haulmont.testtask.controller.adapter.StubStudentToView;
 import com.haulmont.testtask.controller.view.StudentView;
+import com.haulmont.testtask.model.dao.HandlerDAO;
 import com.haulmont.testtask.model.dao.StudentDAO;
+import com.haulmont.testtask.model.entity.Entity;
 import com.haulmont.testtask.model.entity.Student;
 
 import java.util.List;
@@ -21,7 +23,7 @@ public class StudentController {
         for(StudentView view: views){
             students.add(StubStudentToView.conv(view));
         }
-        return studentDAO.delete(students);
+        return HandlerDAO.delete(students, Student.class);
     }
 
     public static List<StudentView> select(List<StudentView> views){
@@ -29,11 +31,11 @@ public class StudentController {
         for(StudentView view: views){
             ids.add(StubStudentToView.conv(view));
         }
-        Map<Long,Integer> map = studentDAO.selectNumberGroupStudents(ids);
-        List<Student> students = studentDAO.select(ids);
+        Map<Long,Integer> map = ((StudentDAO)HandlerDAO.getDAO(Student.class)).selectNumberGroupStudents(ids);
+        List<Entity> students = HandlerDAO.select(ids, Student.class);
         List<StudentView> result = Lists.newArrayList();
-        for(Student student: students){
-            StudentView sv =StubStudentToView.conv1(student);
+        for(Entity student: students){
+            StudentView sv =StubStudentToView.conv1((Student) student);
             sv.setNumberGroup(map.get(sv.getId()));
             result.add(sv);
         }
@@ -41,17 +43,17 @@ public class StudentController {
     }
 
     public static boolean update(StudentView view){
-        boolean isUpdate = studentDAO.update(StubStudentToView.conv(view));
+        boolean isUpdate = HandlerDAO.update(StubStudentToView.conv(view));
         return isUpdate;
     }
 
     public static Long insert(StudentView view){
-        Long id = studentDAO.insert(StubStudentToView.conv(view));
+        Long id = HandlerDAO.insert(StubStudentToView.conv(view));
         return id;
     }
 
     public static Map<Long, Integer> getNumberGroups(){
-        return studentDAO.selectDistinctNumberGroup();
+        return ((StudentDAO)HandlerDAO.getDAO(Student.class)).selectDistinctNumberGroup();
     }
 
 }
