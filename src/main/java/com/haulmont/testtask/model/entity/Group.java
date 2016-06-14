@@ -27,6 +27,10 @@ public class Group implements Entity {
         faculty = view.getFaculty();
     }
 
+    public Group(Long id){
+        this.id = id;
+    }
+
     @Override
     public Long getId() {
         return id;

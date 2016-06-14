@@ -12,7 +12,7 @@ import java.sql.Statement;
  */
 public class ConnectDB {
 
-    public Connection connection;
+    private Connection connection;
 
 
     private String dbPath = "dbpath";// можно все в проперти

@@ -9,9 +9,9 @@ import java.util.List;
  */
 public interface DAO<E extends Entity, T> {
 
-    public List<T> select(E e);
-    public List<T> selectAll();
-    public boolean delete(E e);
-    public T update(T t);
-    public List<T> insert(List<T> list);
+    public List<T> select(List<E> ids);
+    //public List<T> selectAll();
+    public int delete(List<E> obj);
+    public boolean update(T t);
+    public Long insert(T obj);
 }

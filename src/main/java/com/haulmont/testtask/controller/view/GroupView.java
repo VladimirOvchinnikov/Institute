@@ -19,9 +19,21 @@ public class GroupView implements ViewEntity {
     }
 
     public GroupView(Group group){
-        id = group.getId();
+        if (group.getId()!=null){
+            id = group.getId();
+        }
+
         number = group.getNumber();
         faculty = group.getFaculty();
+    }
+
+    public GroupView(Long id){
+        this.id =id;
+    }
+
+    public GroupView(int number, String faculty){
+        this.number = number;
+        this.faculty = faculty;
     }
 
     public GroupView(){
@@ -56,5 +68,14 @@ public class GroupView implements ViewEntity {
 
     public void setFaculty(String faculty) {
         this.faculty = faculty;
+    }
+
+    @Override
+    public String toString() {
+        return "GroupView{" +
+                "id=" + id +
+                ", number=" + number +
+                ", faculty='" + faculty + '\'' +
+                '}';
     }
 }
