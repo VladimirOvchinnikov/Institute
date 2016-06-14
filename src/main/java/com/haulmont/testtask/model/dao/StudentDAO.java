@@ -137,13 +137,16 @@ public class StudentDAO<E extends Entity, T extends Student> implements DAO<E, T
         }
     }
 
-    public Map<Long, Integer> selectNumberGroupStudents(List<T> list){
+    public Map<Long, Integer> selectNumberGroupStudents(List<T> list){//это для selectAll
+        StringBuilder sql = new StringBuilder("SELECT STUDENTS.ID AS ID, GROUPS.NUMBER AS NUMBER FROM STUDENTS JOIN GROUPS ON STUDENTS.GROUP_ID = GROUPS.ID");
         Map<Long, Integer> map = Maps.newHashMap();
-        StringBuilder sql = new StringBuilder("SELECT STUDENTS.ID AS ID, GROUPS.NUMBER AS NUMBER FROM STUDENTS JOIN GROUPS ON STUDENTS.GROUP_ID = GROUPS.ID WHERE STUDENTS.ID IN (");
-        for (int i = 0; i < list.size()-1; i++){
-            sql.append("?, ");
+        if (list.size() > 0) {
+            sql.append("WHERE STUDENTS.ID IN (");
+            for (int i = 0; i < list.size() - 1; i++) {
+                sql.append("?, ");
+            }
+            sql.append("?);");
         }
-        sql.append("?);");
         try(PreparedStatement preparedStatement = ConnectDB.getInstance().getConnection().prepareStatement(sql.toString())){
             int i = 1;
             for(T t: list){
@@ -166,7 +169,7 @@ public class StudentDAO<E extends Entity, T extends Student> implements DAO<E, T
         }
     }
 
-    public Map<Long, Integer> selectDistinctNumberGroup(){
+    public Map<Long, Integer> selectDistinctNumberGroup(){//это для выбора
         Map<Long, Integer> map = Maps.newHashMap();
         try(PreparedStatement preparedStatement = ConnectDB.getInstance().getConnection().prepareStatement("SELECT ID, NUMBER FROM GROUPS")){
             try(ResultSet rs = preparedStatement.executeQuery()){

@@ -7,6 +7,7 @@ import com.haulmont.testtask.model.dao.StudentDAO;
 import com.haulmont.testtask.model.entity.Student;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Leon on 12.06.2016.
@@ -28,10 +29,13 @@ public class StudentController {
         for(StudentView view: views){
             ids.add(StubStudentToView.conv(view));
         }
+        Map<Long,Integer> map = studentDAO.selectNumberGroupStudents(ids);
         List<Student> students = studentDAO.select(ids);
         List<StudentView> result = Lists.newArrayList();
         for(Student student: students){
-            result.add(StubStudentToView.conv1(student));
+            StudentView sv =StubStudentToView.conv1(student);
+            sv.setNumberGroup(map.get(sv.getId()));
+            result.add(sv);
         }
         return result;
     }
@@ -45,4 +49,9 @@ public class StudentController {
         Long id = studentDAO.insert(StubStudentToView.conv(view));
         return id;
     }
+
+    public static Map<Long, Integer> getNumberGroups(){
+        return studentDAO.selectDistinctNumberGroup();
+    }
+
 }

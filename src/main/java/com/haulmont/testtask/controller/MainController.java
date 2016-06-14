@@ -1,6 +1,12 @@
 package com.haulmont.testtask.controller;
 
+import com.google.gwt.thirdparty.guava.common.collect.Lists;
+import com.haulmont.testtask.controller.view.StudentView;
 import com.haulmont.testtask.exception.CriticalException;
+import com.haulmont.testtask.model.db.ConnectDB;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by ovchinnikov on 10.06.2016.
@@ -68,5 +74,13 @@ public class MainController {
 //        StudentView view = new StudentView(0L, "Katia", "Katerinovna", "Katenka", new Date(), 1L, 1);
 //        System.out.println(StudentController.update(view));
 //        ConnectDB.getInstance().close();
+
+//        Map<Long, Integer> map = StudentController.getNumberGroups();
+//        for(Map.Entry<Long, Integer> entry: map.entrySet()){
+//            System.out.println(entry.getKey() + " " + entry.getValue());
+//        }
+//        ConnectDB.getInstance().close();
+
+
     }
 }

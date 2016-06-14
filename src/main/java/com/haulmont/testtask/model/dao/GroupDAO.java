@@ -87,11 +87,7 @@ public class GroupDAO<E extends Entity, T extends Group> implements DAO<E, T> {
             preparedStatement.setInt(1, t.getNumber());
             preparedStatement.setString(2, t.getFaculty());
             preparedStatement.setLong(3, t.getId());
-            if (preparedStatement.executeUpdate() > 0) {
-                return true;
-            } else {
-                return false;
-            }
+            return preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;

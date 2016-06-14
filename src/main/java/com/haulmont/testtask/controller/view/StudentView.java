@@ -58,17 +58,17 @@ public class StudentView implements ViewEntity {
         this.birthDay = student.getBirthDay();
 
         //stub
-        try(PreparedStatement preparedStatement = ConnectDB.getInstance().getConnection().prepareStatement("SELECT NUMBER FROM GROUPS WHERE ID = ?;")){
-            preparedStatement.setLong(1, student.getGroupId());
-            try(ResultSet rs = preparedStatement.executeQuery()){
-                rs.next();
-                this.numberGroup = rs.getInt("number");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (CriticalException e) {
-            e.printStackTrace();
-        }
+//        try(PreparedStatement preparedStatement = ConnectDB.getInstance().getConnection().prepareStatement("SELECT NUMBER FROM GROUPS WHERE ID = ?;")){
+//            preparedStatement.setLong(1, student.getGroupId());
+//            try(ResultSet rs = preparedStatement.executeQuery()){
+//                rs.next();
+//                this.numberGroup = rs.getInt("number");
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        } catch (CriticalException e) {
+//            e.printStackTrace();
+//        }
         this.groupId = student.getGroupId();
     }
 
