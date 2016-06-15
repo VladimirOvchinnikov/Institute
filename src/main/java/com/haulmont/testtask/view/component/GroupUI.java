@@ -18,7 +18,7 @@ public class GroupUI {
     private static VerticalLayout groupTab = new VerticalLayout();
     private static ButtonBlock buttonBlock = new ButtonBlock();
 
-    public static void prepareGroupPage(){
+    public static void prepareGroupPage() {
         groupTable.setSizeFull();
         groupTable.setPageLength(0);
         groupTable.setHeight("100%");
@@ -40,7 +40,7 @@ public class GroupUI {
         groupTable.setSelectable(true);
         groupTable.setColumnWidth("Факультет", 300);
         groupTable.addContainerProperty("Факультет", String.class, null);
-        groupTable.addContainerProperty("Группа",  Integer.class, null);
+        groupTable.addContainerProperty("Группа", Integer.class, null);
 
         //Грузим элементы из БД
         try {
@@ -59,11 +59,11 @@ public class GroupUI {
 
         groupTable.setPageLength(10);
 
-        groupTable.addValueChangeListener(e ->{
-            if(groupTable.getValue()==null){
+        groupTable.addValueChangeListener(e -> {
+            if (groupTable.getValue() == null) {
                 buttonBlock.getEditButton().setVisible(false);
                 buttonBlock.getDeleteButton().setVisible(false);
-            }else{
+            } else {
                 buttonBlock.getEditButton().setVisible(true);
                 buttonBlock.getDeleteButton().setVisible(true);
             }
@@ -75,23 +75,26 @@ public class GroupUI {
         groupTab.setCaption("Группы");
     }
 
-    public static Component groupPage(){
-        if(groupTab.getCaption() == null){
+    public static Component groupPage() {
+        if (groupTab.getCaption() == null) {
             prepareGroupPage();
             return groupTab;
-        }else{
+        } else {
             return groupTab;
         }
     }
 
     //Удаление группы
-    private static void deleteGroup(){
+    private static void deleteGroup() {
         List<GroupView> listDelete = Lists.newArrayList();
-        listDelete.add(new GroupView((Long)groupTable.getValue()));
+        listDelete.add(new GroupView((Long) groupTable.getValue()));
         try {
-            GroupController.delete(listDelete);//если 0 то сообщалку вставить
-            for(GroupView item: listDelete) {
-                groupTable.removeItem(item.getId());
+            if (GroupController.delete(listDelete) == 0) {
+                Notification.show("Не удалось удалить группу. В группе еще есть студенты!");
+            } else {
+                for (GroupView item : listDelete) {
+                    groupTable.removeItem(item.getId());
+                }
             }
         } catch (ControllerException e) {
             e.printStackTrace();
@@ -107,17 +110,17 @@ public class GroupUI {
 
     }
 
-    public static String getTabCaption(){
+    public static String getTabCaption() {
         return groupTab.getCaption();
     }
 
-    private static Window addAddModal(){
-        GroupModalWindow window = new GroupModalWindow("Добавление группы", groupTable);
+    private static Window addAddModal() {
+        GroupModalWindow window = new GroupModalWindow("Добавление группы", false, groupTable);
         return window;
     }
 
-    private static Window addEditModal(){
-        GroupModalWindow groupModalWindow = new GroupModalWindow("Редактирование группы", groupTable, new GroupView());
+    private static Window addEditModal() {
+        GroupModalWindow groupModalWindow = new GroupModalWindow("Редактирование группы", true, groupTable);
         return groupModalWindow;
     }
 }

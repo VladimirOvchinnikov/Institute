@@ -7,10 +7,7 @@ import com.haulmont.testtask.model.db.ConnectDB;
 import com.haulmont.testtask.model.db.exception.DatabaseException;
 import com.haulmont.testtask.model.entity.Entity;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,7 +39,7 @@ public abstract class AbstractDAO<E extends Entity, T> implements DAO<E, T> {
             throw new DAOException("DAOException: select " + e.getMessage(), e);
         } catch (DatabaseException e) {
             //e.printStackTrace();
-            throw new DAOCriticalException("DAOCriticalException: select " +  this.getClass() + " " + e.getMessage(), e);
+            throw new DAOCriticalException("DAOCriticalException: select " + this.getClass() + " " + e.getMessage(), e);
             //return result;
         }
     }
@@ -62,10 +59,12 @@ public abstract class AbstractDAO<E extends Entity, T> implements DAO<E, T> {
 //            e1.printStackTrace();
 //            return -1;
             throw new DAOCriticalException("DAOCriticalException: delete " + this.getClass() + " " + de.getMessage(), de);
+        } catch (SQLIntegrityConstraintViolationException e) {
+            return 0;
         } catch (SQLException e1) {
 //            e1.printStackTrace();
 //            return -1;
-            throw new DAOException("DAOException: delete " +  this.getClass() + " " + e1.getMessage(), e1);
+            throw new DAOException("DAOException: delete " + this.getClass() + " " + e1.getMessage(), e1);
         }
     }
 
@@ -78,7 +77,7 @@ public abstract class AbstractDAO<E extends Entity, T> implements DAO<E, T> {
         } catch (SQLException e) {
 //            e.printStackTrace();
 //            return false;
-            throw new DAOException("DAOException: update " +  this.getClass() + " " + e.getMessage(), e);
+            throw new DAOException("DAOException: update " + this.getClass() + " " + e.getMessage(), e);
         } catch (DatabaseException e) {
 //            e.printStackTrace();
 //            return false;
@@ -102,7 +101,7 @@ public abstract class AbstractDAO<E extends Entity, T> implements DAO<E, T> {
         } catch (SQLException e) {
 //            e.printStackTrace();
 //            return -1L;
-            throw new DAOException("DAOException: insert " +  this.getClass() + " " + e.getMessage(), e);
+            throw new DAOException("DAOException: insert " + this.getClass() + " " + e.getMessage(), e);
         } catch (DatabaseException e) {
 //            e.printStackTrace();
 //            return -1L;

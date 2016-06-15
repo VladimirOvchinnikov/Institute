@@ -1,5 +1,6 @@
 package com.haulmont.testtask.model.dao;
 
+import com.google.gwt.thirdparty.guava.common.collect.Lists;
 import com.google.gwt.thirdparty.guava.common.collect.Maps;
 import com.haulmont.testtask.model.dao.exception.DAOCriticalException;
 import com.haulmont.testtask.model.dao.exception.DAOException;
@@ -15,7 +16,7 @@ import java.util.Map;
 /**
  * Created by Leon on 12.06.2016.
  */
-public class StudentDAO<E extends Entity, T extends Student> extends AbstractDAO<E,T> implements DAO<E, T> {
+public class StudentDAO<E extends Entity, T extends Student> extends AbstractDAO<E, T> implements DAO<E, T> {
 
     public Map<Long, Integer> selectNumberGroupStudents(List<T> list) throws DAOCriticalException, DAOException {//это для selectAll
         StringBuilder sql = new StringBuilder("SELECT STUDENTS.ID AS ID, GROUPS.NUMBER AS NUMBER FROM STUDENTS JOIN GROUPS ON STUDENTS.GROUP_ID = GROUPS.ID");
@@ -96,7 +97,7 @@ public class StudentDAO<E extends Entity, T extends Student> extends AbstractDAO
             student.setBirthDay(rs.getDate("birth_day"));
             student.setGroupId(rs.getLong("group_id"));
             return student;
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new DAOException("wrong data for builder object " + this.getClass() + e.getMessage(), e);
         }
     }
@@ -113,7 +114,7 @@ public class StudentDAO<E extends Entity, T extends Student> extends AbstractDAO
 
     @Override
     protected String getTextQueryUpdate() {
-        return "SET FIRST_NAME = ? , MIDDLE_NAME = ?, LAST_NAME = ?, BIRTH_DAY = ?, GROUP_ID = ? WHERE ID = ?";
+        return "UPDATE STUDENTS SET FIRST_NAME = ? , MIDDLE_NAME = ?, LAST_NAME = ?, BIRTH_DAY = ?, GROUP_ID = ? WHERE ID = ?";
     }
 
     @Override
@@ -123,8 +124,9 @@ public class StudentDAO<E extends Entity, T extends Student> extends AbstractDAO
             ps.setString(2, obj.getMiddleName());
             ps.setString(3, obj.getLastName());
             ps.setDate(4, new Date(obj.getBirthDay().getTime()));
+            ps.setLong(5, obj.getGroupId());
             ps.setLong(6, obj.getId());
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new DAOException("wrong set data for update " + this.getClass() + e.getMessage(), e);
         }
     }
@@ -142,9 +144,47 @@ public class StudentDAO<E extends Entity, T extends Student> extends AbstractDAO
             ps.setString(3, obj.getLastName());
             ps.setDate(4, new Date(obj.getBirthDay().getTime()));
             ps.setLong(5, obj.getGroupId());
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new DAOException("wrong set data for insert " + this.getClass() + e.getMessage(), e);
         }
+    }
 
+    public List<Student> filter(String filterLastName, Integer filterNumberGroup) throws DAOException, DAOCriticalException {
+        StringBuilder sql = new StringBuilder("SELECT * FROM STUDENTS JOIN GROUPS ON STUDENTS.GROUP_ID = GROUPS.ID WHERE ");//"STUDENTS.LAST_NAME = ? AND GROUPS.NUMBER = ?";
+        List<Student> students = Lists.newArrayList();
+        if (!filterLastName.isEmpty() && filterNumberGroup != null) {
+            sql.append("STUDENTS.LAST_NAME = ? AND GROUPS.NUMBER = ?;");
+        } else if (!filterLastName.isEmpty()) {
+            sql.append("STUDENTS.LAST_NAME = ?;");
+        } else if (filterNumberGroup != null) {
+            sql.append("GROUPS.NUMBER = ?;");
+        }else {
+            return students;
+        }
+
+        try (PreparedStatement preparedStatement = ConnectDB.getInstance().getConnection().prepareStatement(sql.toString())) {
+            if (!filterLastName.isEmpty() && filterNumberGroup != null) {
+                preparedStatement.setString(1, filterLastName);
+                preparedStatement.setInt(2, filterNumberGroup);
+            } else if (!filterLastName.isEmpty()) {
+                preparedStatement.setString(1, filterLastName);
+            } else if (filterNumberGroup != null) {
+                preparedStatement.setInt(1, filterNumberGroup);
+            }
+
+
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                while (rs.next()) {
+                    students.add(getEntity(rs));
+                }
+            }
+            return students;
+        } catch (SQLException e) {
+            //e.printStackTrace();
+            throw new DAOException("wrong set data for filter " + this.getClass() + e.getMessage(), e);
+        } catch (DatabaseException e) {
+            //e.printStackTrace();
+            throw new DAOCriticalException("DAOCriticalException: filter " + this.getClass() + e.getMessage(), e);
+        }
     }
 }

@@ -87,4 +87,17 @@ public class StudentController {
         }
     }
 
+    public static List<StudentView> filter(StudentView filter) throws ControllerCriticalException, ControllerException {
+        try {
+            List<Student> students = ((StudentDAO) HandlerDAO.getDAO(Student.class)).filter(filter.getLastName(), filter.getNumberGroup());
+            return StudentConverter.studentToView(students, StudentConverter::newStudentView);
+        } catch (DAOCriticalException e) {
+            //e.printStackTrace();
+            throw new ControllerCriticalException("", e);
+        } catch (DAOException e) {
+            //e.printStackTrace();
+            throw new ControllerException("", e);
+        }
+    }
+
 }

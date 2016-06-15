@@ -26,6 +26,10 @@ public class ButtonBlock extends HorizontalLayout {
         deleteButton.setVisible(false);
     }
 
+    public void addButton(Button button){
+        addComponent(button);
+    }
+
 
     public Button getAddButton() {
         return addButton;

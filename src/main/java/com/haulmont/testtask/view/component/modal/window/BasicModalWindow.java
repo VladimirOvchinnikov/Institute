@@ -1,7 +1,9 @@
 package com.haulmont.testtask.view.component.modal.window;
 
-import com.haulmont.testtask.controller.view.ViewEntity;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 /**
  * Created by Leon on 15.06.2016.
@@ -17,24 +19,23 @@ public abstract class BasicModalWindow extends Window {
         return modalContent;
     }
 
-    public BasicModalWindow(String name) {
+    public BasicModalWindow(String name,  boolean isUpdate) {
         super(name);
         init();
-        okButton.addClickListener(e -> {
-            add();
-        });
-    }
+        if (isUpdate) {
+            getOkButton().setCaption("Изменить");
+            okButton.addClickListener(e -> {
+                if (!update()) {
+                    close();
+                    Notification.show("Запись не обновилась");
+                }
 
-    public BasicModalWindow(String name,  ViewEntity view) {
-        super(name);
-        init();
-        okButton.addClickListener(e -> {
-            if (!update(view)){
-                close();
-                Notification.show("Запись не обновилась");
-            }
-
-        });
+            });
+        }else {
+            okButton.addClickListener(e -> {
+                add();
+            });
+        }
     }
 
     private void init() {
@@ -49,6 +50,7 @@ public abstract class BasicModalWindow extends Window {
         cancelButton.addClickListener(e -> {
             close();
         });
+        center();
     }
 
     public Button getOkButton() {
@@ -61,5 +63,8 @@ public abstract class BasicModalWindow extends Window {
 
     abstract public void add();
 
-    abstract public boolean update(ViewEntity view);
+    abstract public boolean update();
+
+    abstract protected void enableValidation();
+    abstract protected void disableValidation();
 }
