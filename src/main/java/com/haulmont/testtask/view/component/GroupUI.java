@@ -17,17 +17,12 @@ import java.util.List;
 public class GroupUI {
     private static Table groupTable = new Table();
     private static VerticalLayout groupTab = new VerticalLayout();
-    //private static HorizontalLayout buttonBlock = new HorizontalLayout();
     private static ButtonBlock buttonBlock = new ButtonBlock();
 
-    //Первичная отрисовка элементов на табе
     public static void prepareGroupPage(){
         groupTable.setSizeFull();
         groupTable.setPageLength(0);
         groupTable.setHeight("100%");
-        //Button addGroupButton = new Button("Добавить");
-        //Button editGroupButton = new Button("Редактировать");
-        //Button deleteGroupButton = new Button("Удалить");
 
         buttonBlock.getAddButton().addClickListener(e -> {
             UI.getCurrent().addWindow(addAddModal());
@@ -40,28 +35,8 @@ public class GroupUI {
             deleteGroup();
         });
 
-//        editGroupButton.addClickListener( e -> {
-//            UI.getCurrent().addWindow(addEditModal());
-//        });
-//
-//        addGroupButton.addClickListener( e -> {
-//            UI.getCurrent().addWindow(addAddModal());
-//        });
-//
-//        deleteGroupButton.addClickListener(e -> {
-//            deleteGroup();
-//        });
-//
-        //buttonBlock.setMargin(true);
-//        //buttonBlock.setSpacing(true);
-        //buttonBlock.addComponent(addGroupButton);
-        //buttonBlock.addComponent(editGroupButton);
-//        buttonBlock.addComponent(deleteGroupButton);
-//
-        //editGroupButton.setVisible(false);
         buttonBlock.getEditButton().setVisible(false);
         buttonBlock.getDeleteButton().setVisible(false);
-//        deleteGroupButton.setVisible(false);
 
         groupTable.setSelectable(true);
         groupTable.setColumnWidth("Факультет", 300);
@@ -70,7 +45,6 @@ public class GroupUI {
 
         //Грузим элементы из БД
         try {
-            //groupTable = GroupController.loadElems(groupTable);
             List<GroupView> groups = GroupController.select(Lists.newArrayList());
             for (GroupView group : groups) {
                 groupTable.addItem(new Object[]{
@@ -96,14 +70,12 @@ public class GroupUI {
             }
         });
 
-        //groupTab.addComponent(buttonBlock);
         groupTab.addComponent(buttonBlock);
         groupTab.addComponent(groupTable);
 
         groupTab.setCaption("Группы");
     }
 
-    //Возвращает таб
     public static Component groupPage(){
         if(groupTab.getCaption() == null){
             prepareGroupPage();
@@ -115,15 +87,12 @@ public class GroupUI {
 
     //Удаление группы
     private static void deleteGroup(){
-        //Long groupID = (Long) groupTable.getValue();
         List<GroupView> listDelete = Lists.newArrayList();
         listDelete.add(new GroupView((Long)groupTable.getValue()));
         try {
-            GroupController.delete(listDelete);//GroupController.delete(groupTable.getValue());
-            groupTable.removeAllItems();
-            List<GroupView> groups = GroupController.select(Lists.newArrayList());
-            for (GroupView group : groups) {
-                groupTable.addItem(group);
+            GroupController.delete(listDelete);//если 0 то сообщалку вставить
+            for(GroupView item: listDelete) {
+                groupTable.removeItem(item.getId());
             }
         } catch (ControllerException e) {
             e.printStackTrace();
@@ -139,7 +108,6 @@ public class GroupUI {
 
     }
 
-    //Возвращает имя таба
     public static String getTabCaption(){
         return groupTab.getCaption();
     }
