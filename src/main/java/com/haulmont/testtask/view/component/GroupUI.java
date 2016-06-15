@@ -5,7 +5,6 @@ import com.haulmont.testtask.controller.GroupController;
 import com.haulmont.testtask.controller.exception.ControllerCriticalException;
 import com.haulmont.testtask.controller.exception.ControllerException;
 import com.haulmont.testtask.controller.view.GroupView;
-import com.haulmont.testtask.view.component.modal.ButtonBlock;
 import com.haulmont.testtask.view.component.modal.window.GroupModalWindow;
 import com.vaadin.ui.*;
 
