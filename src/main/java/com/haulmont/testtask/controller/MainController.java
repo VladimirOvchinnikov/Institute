@@ -1,23 +1,20 @@
 package com.haulmont.testtask.controller;
 
 import com.google.gwt.thirdparty.guava.common.collect.Lists;
-import com.haulmont.testtask.controller.adapter.StubStudentToView;
-import com.haulmont.testtask.controller.view.GroupView;
+import com.haulmont.testtask.controller.adapter.StudentConverter;
 import com.haulmont.testtask.controller.view.StudentView;
-import com.haulmont.testtask.exception.CriticalException;
-import com.haulmont.testtask.model.db.ConnectDB;
+import com.haulmont.testtask.model.db.exception.DatabaseException;
 import com.haulmont.testtask.model.entity.Student;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by ovchinnikov on 10.06.2016.
  */
 public class MainController {
 
-    public static void main(String[] args) throws CriticalException {
+    public static void main(String[] args) throws DatabaseException {
 
 //        GroupView view0= new GroupView(2L);
 //        GroupView view1= new GroupView(1L);
@@ -99,15 +96,46 @@ public class MainController {
 //        ConnectDB.getInstance().close();
 
         Student student = new Student(-1L, "king", "King", "KinG", new Date(), -2L);
-        StudentView sv = StubStudentToView.convert(student, (i) -> new StudentView(i.getId(), i.getFirstName(), i.getMiddleName(), i.getLastName(), i.getBirthDay(), i.getGroupId(),-3));
+        StudentView sv = StudentConverter.studentToView(student, (s) -> new StudentView(s.getId(),
+                                                                                        s.getFirstName(),
+                                                                                        s.getMiddleName(),
+                                                                                        s.getLastName(),
+                                                                                        s.getBirthDay(),
+                                                                                        s.getGroupId(),
+                                                                                        -3));
         System.out.println(sv);
 
         List<Student> list = Lists.newArrayList();
         list.add(student);
         Student student1 = new Student(-2L, "cat", "Cat", "caT", new Date(), -10L);
         list.add(student1);
-        List<StudentView> views= StubStudentToView.convert1(list, (i) -> new StudentView(i.getId(), i.getFirstName(), i.getMiddleName(), i.getLastName(), i.getBirthDay(), i.getGroupId(),-4));
+        List<StudentView> views= StudentConverter.studentToView(list, (s) -> new StudentView(student.getId(),
+                                                                                             student.getFirstName(),
+                                                                                             student.getMiddleName(),
+                                                                                             student.getLastName(),
+                                                                                             student.getBirthDay(),
+                                                                                             student.getGroupId(),
+                                                                                             -4));
         for(StudentView view: views){
+            System.out.println(view);
+        }
+
+        System.out.println();
+        Student student2 = StudentConverter.viewToStudent(sv, (view) -> new Student(view.getId(),
+                                                                                 view.getFirstName(),
+                                                                                 view.getMiddleName(),
+                                                                                 view.getLastName(),
+                                                                                 view.getBirthDay(),
+                                                                                 view.getGroupId()));
+        System.out.println(student2);
+        List<Student> sudents = StudentConverter.viewToStudent(views, (view) -> new Student(view.getId(),
+                view.getFirstName(),
+                view.getMiddleName(),
+                view.getLastName(),
+                view.getBirthDay(),
+                view.getGroupId()));
+
+        for(Student view: sudents){
             System.out.println(view);
         }
 

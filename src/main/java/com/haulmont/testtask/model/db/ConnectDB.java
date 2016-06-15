@@ -1,6 +1,6 @@
 package com.haulmont.testtask.model.db;
 
-import com.haulmont.testtask.exception.CriticalException;
+import com.haulmont.testtask.model.db.exception.DatabaseException;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -27,7 +27,7 @@ public class ConnectDB {
         return connection;
     }
 
-    public static ConnectDB getInstance() throws CriticalException {
+    public static ConnectDB getInstance() throws DatabaseException {
         ConnectDB localInstance = instance;
         if (localInstance == null){
             synchronized (ConnectDB.class){
@@ -36,9 +36,9 @@ public class ConnectDB {
                     try {
                         instance = localInstance = new ConnectDB();
                         instance.connect();
-                    }catch (CriticalException ce){
+                    }catch (DatabaseException ce){
                         ce.printStackTrace();
-                        throw new CriticalException("Error: init database \n" + ce.getMessage(), ce);
+                        throw new DatabaseException("Error: init database \n" + ce.getMessage(), ce);
                     }
                 }
             }
@@ -46,33 +46,34 @@ public class ConnectDB {
         return localInstance;
     }
 
-    private ConnectDB() throws CriticalException {
+    private ConnectDB() throws DatabaseException {
         try {
             Class.forName("org.hsqldb.jdbcDriver");
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            throw new CriticalException("Error: not load class driver (org.hsqldb.jdbcDriver)", e);
+            //e.printStackTrace();
+            throw new DatabaseException("Error: not load class driver (org.hsqldb.jdbcDriver)", e);
         }
     }
 
-    public void connect() throws CriticalException {
+    private void connect() throws DatabaseException {
         try {
             connection = DriverManager.getConnection(
                         "jdbc:hsqldb:file:" + dbPath+ "/" + dbName, dbUser, dbPassword);
         } catch (SQLException e) {
             ConnectDB.instance = null;
-            e.printStackTrace();
-            throw new CriticalException("Error: not connect on db ", e);
+            //e.printStackTrace();
+            throw new DatabaseException("Error: not connect database ", e);
         }
 
     }
 
-    public  void close(){
+    public  void close() throws DatabaseException {
         try (Statement statement = connection.createStatement()){
             statement.execute("SHUTDOWN");
         } catch (SQLException e) {
-            System.err.println("Error: close db");
-            e.printStackTrace();
+            //System.err.println("Error: close db");
+            //e.printStackTrace();
+            throw new DatabaseException("Error: not close connect database", e);
         }
     }
 }

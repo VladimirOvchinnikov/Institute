@@ -21,6 +21,11 @@ public class Group implements Entity {
         this.faculty = faculty;
     }
 
+    public Group( Integer number, String faculty){
+        this.number = number;
+        this.faculty = faculty;
+    }
+
     public Group(GroupView view){
         id = view.getId();
         number = view.getNumber();

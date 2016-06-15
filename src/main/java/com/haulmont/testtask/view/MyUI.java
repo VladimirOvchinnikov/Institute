@@ -44,11 +44,11 @@ public class MyUI extends UI {
         tabsheet.addTab(studentTab, StudentUI.getTabCaption());
 
         tabsheet.addSelectedTabChangeListener(e -> {
-            TabSheet tabshee = e.getTabSheet();
+            TabSheet tabSheet = e.getTabSheet();
 
-            Layout tab = (Layout) tabshee.getSelectedTab();
+            Layout tab = (Layout) tabSheet.getSelectedTab();
 
-            String caption = tabshee.getTab(tab).getCaption();
+            String caption = tabSheet.getTab(tab).getCaption();
             if(caption.equals("Группы")){
 
             }else if(caption.equals("Студенты")){

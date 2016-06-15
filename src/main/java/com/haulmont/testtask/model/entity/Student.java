@@ -20,8 +20,20 @@ public class Student implements Entity {
     public Student(){
     }
 
+    public Student(Long id){
+        this.id = id;
+    }
+
     public Student(Long id, String firstName, String middleName, String lastName, Date birthDay, Long groupId){
         this.id = id;
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
+        this.birthDay = birthDay;
+        this.groupId = groupId;
+    }
+
+    public Student( String firstName, String middleName, String lastName, Date birthDay, Long groupId){
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
@@ -86,5 +98,17 @@ public class Student implements Entity {
 
     public void setGroupId(Long groupId) {
         this.groupId = groupId;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", middleName='" + middleName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", birthDay=" + birthDay +
+                ", groupId=" + groupId +
+                '}';
     }
 }

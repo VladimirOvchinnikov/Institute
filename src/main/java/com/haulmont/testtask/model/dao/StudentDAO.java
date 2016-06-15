@@ -1,7 +1,9 @@
 package com.haulmont.testtask.model.dao;
 
 import com.google.gwt.thirdparty.guava.common.collect.Maps;
-import com.haulmont.testtask.exception.CriticalException;
+import com.haulmont.testtask.model.dao.exception.DAOCriticalException;
+import com.haulmont.testtask.model.dao.exception.DAOException;
+import com.haulmont.testtask.model.db.exception.DatabaseException;
 import com.haulmont.testtask.model.db.ConnectDB;
 import com.haulmont.testtask.model.entity.Entity;
 import com.haulmont.testtask.model.entity.Student;
@@ -15,7 +17,7 @@ import java.util.Map;
  */
 public class StudentDAO<E extends Entity, T extends Student> extends AbstractDAO<E,T> implements DAO<E, T> {
 
-    public Map<Long, Integer> selectNumberGroupStudents(List<T> list) {//это для selectAll
+    public Map<Long, Integer> selectNumberGroupStudents(List<T> list) throws DAOCriticalException, DAOException {//это для selectAll
         StringBuilder sql = new StringBuilder("SELECT STUDENTS.ID AS ID, GROUPS.NUMBER AS NUMBER FROM STUDENTS JOIN GROUPS ON STUDENTS.GROUP_ID = GROUPS.ID");
         Map<Long, Integer> map = Maps.newHashMap();
         if (list.size() > 0) {
@@ -39,15 +41,17 @@ public class StudentDAO<E extends Entity, T extends Student> extends AbstractDAO
             }
             return map;
         } catch (SQLException e) {
-            e.printStackTrace();
-            return map;
-        } catch (CriticalException e) {
-            e.printStackTrace();
-            return map;
+//            e.printStackTrace();
+//            return map;
+            throw new DAOException("DAOException: selectNumberGroupStudents " + this.getClass(), e);
+        } catch (DatabaseException e) {
+//            e.printStackTrace();
+//            return map;
+            throw new DAOCriticalException("DAOCriticalException: selectNumberGroupStudents" + this.getClass() + e.getMessage(), e);
         }
     }
 
-    public Map<Long, Integer> selectDistinctNumberGroup() {//это для выбора
+    public Map<Long, Integer> selectDistinctNumberGroup() throws DAOException, DAOCriticalException {//это для выбора
         Map<Long, Integer> map = Maps.newHashMap();
         try (PreparedStatement preparedStatement = ConnectDB.getInstance().getConnection().prepareStatement("SELECT ID, NUMBER FROM GROUPS")) {
             try (ResultSet rs = preparedStatement.executeQuery()) {
@@ -57,11 +61,13 @@ public class StudentDAO<E extends Entity, T extends Student> extends AbstractDAO
             }
             return map;
         } catch (SQLException e) {
-            e.printStackTrace();
-            return map;
-        } catch (CriticalException e) {
-            e.printStackTrace();
-            return map;
+//            e.printStackTrace();
+//            return map;
+            throw new DAOException("DAOException: selectDistinctNumberGroup " + this.getClass(), e);
+        } catch (DatabaseException e) {
+//            e.printStackTrace();
+//            return map;
+            throw new DAOCriticalException("DAOCriticalException: selectDistinctNumberGroup" + this.getClass() + e.getMessage(), e);
         }
     }
 
@@ -80,15 +86,19 @@ public class StudentDAO<E extends Entity, T extends Student> extends AbstractDAO
     }
 
     @Override
-    protected T getEntity(ResultSet rs) throws SQLException {
+    protected T getEntity(ResultSet rs) throws DAOException {
         T student = (T) new Student();
-        student.setId(rs.getLong("id"));
-        student.setFirstName(rs.getString("first_name"));
-        student.setMiddleName(rs.getString("middle_name"));
-        student.setLastName(rs.getString("last_name"));
-        student.setBirthDay(rs.getDate("birth_day"));
-        student.setGroupId(rs.getLong("group_id"));
-        return student;
+        try {
+            student.setId(rs.getLong("id"));
+            student.setFirstName(rs.getString("first_name"));
+            student.setMiddleName(rs.getString("middle_name"));
+            student.setLastName(rs.getString("last_name"));
+            student.setBirthDay(rs.getDate("birth_day"));
+            student.setGroupId(rs.getLong("group_id"));
+            return student;
+        }catch (SQLException e){
+            throw new DAOException("wrong data for builder object " + this.getClass() + e.getMessage(), e);
+        }
     }
 
     @Override
@@ -107,9 +117,16 @@ public class StudentDAO<E extends Entity, T extends Student> extends AbstractDAO
     }
 
     @Override
-    protected void setParametersUpdate(PreparedStatement ps, T t) throws SQLException {
-        setParametersInsert(ps,t);
-        ps.setLong(6, t.getId());
+    protected void setParametersUpdate(PreparedStatement ps, T obj) throws DAOException {
+        try {
+            ps.setString(1, obj.getFirstName());
+            ps.setString(2, obj.getMiddleName());
+            ps.setString(3, obj.getLastName());
+            ps.setDate(4, new Date(obj.getBirthDay().getTime()));
+            ps.setLong(6, obj.getId());
+        }catch (SQLException e){
+            throw new DAOException("wrong set data for update " + this.getClass() + e.getMessage(), e);
+        }
     }
 
     @Override
@@ -118,12 +135,16 @@ public class StudentDAO<E extends Entity, T extends Student> extends AbstractDAO
     }
 
     @Override
-    protected void setParametersInsert(PreparedStatement ps, T t) throws SQLException {
-        ps.setString(1, t.getFirstName());
-        ps.setString(2, t.getMiddleName());
-        ps.setString(3, t.getLastName());
-        ps.setDate(4, new Date(t.getBirthDay().getTime()));
-        ps.setLong(5, t.getGroupId());
+    protected void setParametersInsert(PreparedStatement ps, T obj) throws DAOException {
+        try {
+            ps.setString(1, obj.getFirstName());
+            ps.setString(2, obj.getMiddleName());
+            ps.setString(3, obj.getLastName());
+            ps.setDate(4, new Date(obj.getBirthDay().getTime()));
+            ps.setLong(5, obj.getGroupId());
+        }catch (SQLException e){
+            throw new DAOException("wrong set data for insert " + this.getClass() + e.getMessage(), e);
+        }
 
     }
 }

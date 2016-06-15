@@ -1,12 +1,5 @@
 package com.haulmont.testtask.controller.view;
 
-import com.haulmont.testtask.exception.CriticalException;
-import com.haulmont.testtask.model.db.ConnectDB;
-import com.haulmont.testtask.model.entity.Student;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Date;
 
 /**
@@ -14,22 +7,22 @@ import java.util.Date;
  */
 public class StudentView implements ViewEntity {
 
-    private long id;
+    private Long id;
     private String firstName;
     private String middleName;
     private String lastName;
     private Date birthDay;
-    private int numberGroup;
-    private long groupId;
+    private Integer numberGroup;
+    private Long groupId;
 
     public StudentView(){
     }
 
-    public StudentView(long id){
+    public StudentView(Long id){
         this.id = id;
     }
 
-    public StudentView(long id, String firstName, String middleName, String  lastName, Date birthDay,  long groupId, int numberGroup){
+    public StudentView(Long id, String firstName, String middleName, String  lastName, Date birthDay,  Long groupId, Integer numberGroup){
         this.id = id;
         this.firstName = firstName;
         this.middleName = middleName;
@@ -39,46 +32,31 @@ public class StudentView implements ViewEntity {
         this.groupId = groupId;
     }
 
-    public StudentView(String firstName, String middleName, String  lastName, Date birthDay, long groupId, int numberGroup){
+    public StudentView(Long id, String firstName, String middleName, String  lastName, Date birthDay,  Long groupId){
+        this.id = id;
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
+        this.birthDay = birthDay;
+        this.groupId = groupId;
+    }
+
+    public StudentView(String firstName, String middleName, String  lastName, Date birthDay, Long groupId, Integer numberGroup){
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
         this.birthDay = birthDay;
         this.numberGroup = numberGroup;
         this.groupId = groupId;
-    }
-
-    public StudentView(Student student){
-        if (student.getId()!=null) {
-            this.id = student.getId();
-        }
-        this.firstName = student.getFirstName();
-        this.middleName = student.getMiddleName();
-        this.lastName = student.getLastName();
-        this.birthDay = student.getBirthDay();
-
-        //stub
-//        try(PreparedStatement preparedStatement = ConnectDB.getInstance().getConnection().prepareStatement("SELECT NUMBER FROM GROUPS WHERE ID = ?;")){
-//            preparedStatement.setLong(1, student.getGroupId());
-//            try(ResultSet rs = preparedStatement.executeQuery()){
-//                rs.next();
-//                this.numberGroup = rs.getInt("number");
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        } catch (CriticalException e) {
-//            e.printStackTrace();
-//        }
-        this.groupId = student.getGroupId();
     }
 
     @Override
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
     @Override
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -114,19 +92,19 @@ public class StudentView implements ViewEntity {
         this.birthDay = birthDay;
     }
 
-    public int getNumberGroup() {
+    public Integer getNumberGroup() {
         return numberGroup;
     }
 
-    public void setNumberGroup(int numberGroup) {
+    public void setNumberGroup(Integer numberGroup) {
         this.numberGroup = numberGroup;
     }
 
-    public long getGroupId() {
+    public Long getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(long groupId) {
+    public void setGroupId(Long groupId) {
         this.groupId = groupId;
     }
 

@@ -5,6 +5,6 @@ package com.haulmont.testtask.controller.view;
  */
 public interface ViewEntity {
 
-    public long getId();        //не забываем про unchecked
-    public void setId(long id); //не забываем про unchecked
+    public Long getId();
+    public void setId(Long id);
 }

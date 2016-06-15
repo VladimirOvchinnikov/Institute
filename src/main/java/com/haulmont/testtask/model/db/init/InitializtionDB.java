@@ -1,7 +1,7 @@
 package com.haulmont.testtask.model.db.init;
 
 import com.haulmont.testtask.model.db.ConnectDB;
-import com.haulmont.testtask.exception.CriticalException;
+import com.haulmont.testtask.model.db.exception.DatabaseException;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -38,7 +38,7 @@ public class InitializtionDB {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        } catch (CriticalException e) {
+        } catch (DatabaseException e) {
             e.printStackTrace();
         }
     }

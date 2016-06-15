@@ -2,6 +2,8 @@ package com.haulmont.testtask.view.component;
 
 import com.google.gwt.thirdparty.guava.common.collect.Lists;
 import com.haulmont.testtask.controller.StudentController;
+import com.haulmont.testtask.controller.exception.ControllerCriticalException;
+import com.haulmont.testtask.controller.exception.ControllerException;
 import com.haulmont.testtask.controller.view.StudentView;
 import com.vaadin.data.Validator;
 import com.vaadin.data.validator.DateRangeValidator;
@@ -70,7 +72,14 @@ public class StudentUI {
         //Грузим элементы из БД
 
         List<StudentView> students =  Lists.newArrayList();
-        students = StudentController.select(students);
+        try {
+            students = StudentController.select(students);
+        } catch (ControllerException e) {
+            e.printStackTrace();
+        } catch (ControllerCriticalException e) {
+            e.printStackTrace();
+        }
+
         for (StudentView student: students){
             studentTable.addItem(new Object[]{student.getFirstName(), student.getLastName(), student.getMiddleName(),
                     student.getBirthDay(), student.getNumberGroup()}, student.getId());
@@ -123,14 +132,20 @@ public class StudentUI {
         closeFilter.setCaption("Отмена");
 
         closeFilter.addClickListener(e -> {
-            studentTable.removeAllItems();
-            //studentTable = StudentController.loadAllElems(studentTable);
+            try {
+                studentTable.removeAllItems();
+                //studentTable = StudentController.loadAllElems(studentTable);
 
-            List<StudentView> students =  Lists.newArrayList();
-            students = StudentController.select(students);
-            for (StudentView student: students){
-                studentTable.addItem(new Object[]{student.getFirstName(), student.getLastName(), student.getMiddleName(),
-                        student.getBirthDay(), student.getNumberGroup()}, student.getId());
+                List<StudentView> students = Lists.newArrayList();
+                students = StudentController.select(students);
+                for (StudentView student : students) {
+                    studentTable.addItem(new Object[]{student.getFirstName(), student.getLastName(), student.getMiddleName(),
+                            student.getBirthDay(), student.getNumberGroup()}, student.getId());
+                }
+            } catch (ControllerException e1) {
+                e1.printStackTrace();
+            } catch (ControllerCriticalException e1) {
+                e1.printStackTrace();
             }
 
             filterBlock.close();
@@ -206,7 +221,7 @@ public class StudentUI {
 //        } catch (SQLException e) {
 //            e.printStackTrace();
 //            Notification.show("SQL Error");
-//        } catch (CriticalException e) {
+//        } catch (DatabaseException e) {
 //            Notification.show("Critical Error");
 //        }
         return ret;
@@ -223,15 +238,20 @@ public class StudentUI {
 
     private static void deleteStudent(){
         Long studentID = (Long) studentTable.getValue();
-        //try {
+        try {
             StudentView student = new StudentView(studentID);
             List<StudentView> students = Lists.newArrayList();
             students.add(student);
             StudentController.delete(students);
             studentTable.removeItem(studentTable.getValue());
+        } catch (ControllerCriticalException e) {
+            e.printStackTrace();
+        } catch (ControllerException e) {
+            e.printStackTrace();
+        }
 //        } catch (SQLException e) {
 //            Notification.show("SQL Error");
-//        } catch (CriticalException e) {
+//        } catch (DatabaseException e) {
 //            Notification.show("Critical error");
 //        }
 
@@ -244,18 +264,25 @@ public class StudentUI {
             Date birth,
             Long groupId,
             Integer groupNumber){
-//        try {
+        try {
             StudentView student = new StudentView(firstName, middleName, lastName, birth, groupId, groupNumber);
             Long id = StudentController.insert(student);
             Notification.show("Запись добавлена");
             return id;
+        } catch (ControllerException e) {
+            e.printStackTrace();
+            return -1L;
+        } catch (ControllerCriticalException e) {
+            e.printStackTrace();
+            return -1L;
+        }
 //        } catch (ClassNotFoundException e) {
 //            Notification.show("Class not found");
 //            return null;
 //        } catch (SQLException e) {
 //            Notification.show("SQL Error");
 //            return null;
-//        } catch (CriticalException e) {
+//        } catch (DatabaseException e) {
 //            Notification.show("Critical error");
 //            return null;
 //        }
@@ -269,18 +296,25 @@ public class StudentUI {
             Integer groupNumber,
             Long groupId,
             Long id){
-        //try {
-            StudentView student = new StudentView(id, firstName, middleName, lastName, birth, groupId,  groupNumber);
+        try {
+            StudentView student = new StudentView(id, firstName, middleName, lastName, birth, groupId, groupNumber);
             boolean isUpdate = StudentController.update(student);
             Notification.show("Запись изменена");
             return isUpdate;
+        } catch (ControllerException e) {
+            e.printStackTrace();
+            return false;
+        } catch (ControllerCriticalException e) {
+            e.printStackTrace();
+            return false;
+        }
 //        } catch (ClassNotFoundException e) {
 //            Notification.show("Class not found");
 //            return null;
 //        } catch (SQLException e) {
 //            Notification.show("SQL Error");
 //            return null;
-//        } catch (CriticalException e) {
+//        } catch (DatabaseException e) {
 //            Notification.show("Critical error");
 //            return null;
 //        }
