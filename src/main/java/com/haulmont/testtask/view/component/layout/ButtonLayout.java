@@ -1,4 +1,4 @@
-package com.haulmont.testtask.view.component;
+package com.haulmont.testtask.view.component.layout;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
@@ -6,12 +6,12 @@ import com.vaadin.ui.HorizontalLayout;
 /**
  * Created by Leon on 15.06.2016.
  */
-public class ButtonBlock extends HorizontalLayout {
+public class ButtonLayout extends HorizontalLayout {
     private Button addButton ;
     private Button editButton ;
     private Button deleteButton;
 
-    public ButtonBlock(){
+    public ButtonLayout(){
         super();
         addButton = new Button("Добавить");
         editButton = new Button("Редактировать");

@@ -6,6 +6,7 @@ import com.haulmont.testtask.controller.exception.ControllerCriticalException;
 import com.haulmont.testtask.controller.exception.ControllerException;
 import com.haulmont.testtask.controller.view.StudentView;
 import com.haulmont.testtask.view.component.modal.window.BasicModalWindow;
+import com.vaadin.data.validator.IntegerRangeValidator;
 import com.vaadin.ui.*;
 
 import java.util.List;
@@ -15,24 +16,18 @@ import java.util.Map;
  * Created by Leon on 16.06.2016.
  */
 public class StudentFilterModalWindow extends BasicModalWindow {
-    private Table table;
-    private TextField inputFilterStudentLastName;
-    private NativeSelect selectGroup;
 
-    private void init() {
-        setCaption("Фильтр студентов");
-        VerticalLayout filterContent = new VerticalLayout();
-        filterContent.setMargin(true);
-        setContent(filterContent);
+    protected Table table;
 
-//        TextField inputFilterStudentFirstName = new TextField();
-//        inputFilterStudentFirstName.setCaption("Имя");
+    protected TextField lastName;
+    protected NativeSelect selectGroup;
 
-//        TextField inputFilterStudentMiddleName = new TextField();
-//        inputFilterStudentMiddleName.setCaption("Фамилия");
+    public StudentFilterModalWindow(String name, Table table) {
+        super(name);
+        this.table = table;
 
-        inputFilterStudentLastName = new TextField();
-        inputFilterStudentLastName.setCaption("Фамилия");
+        lastName = new TextField();
+        lastName.setCaption("Фамилия");
 
         selectGroup = new NativeSelect();
         try {
@@ -46,19 +41,18 @@ public class StudentFilterModalWindow extends BasicModalWindow {
         } catch (ControllerException e) {
             e.printStackTrace();
         }
-        //selectGroup.setNullSelectionAllowed(false);
 
-        selectGroup.setNullSelectionItemId(0L);
-        selectGroup.setItemCaption(0L, "--Select");
-
-        selectGroup.setNullSelectionAllowed(false);
         selectGroup.setCaption("Группа");
+        selectGroup.addValidator(new IntegerRangeValidator("Введите группу", 1, 99999));
 
-        getOkButton().setCaption("Ok");
+        selectGroup.setImmediate(true);
+        selectGroup.setValidationVisible(false);
+        selectGroup.setBuffered(true);
 
-        getCancelButton().addClickListener(e -> {
+        okButton.setCaption("Ok");
+
+        cancelButton.addClickListener(e -> {
             table.removeAllItems();
-            //studentTable = StudentController.loadAllElems(studentTable);
 
             List<StudentView> students = Lists.newArrayList();
             try {
@@ -75,33 +69,27 @@ public class StudentFilterModalWindow extends BasicModalWindow {
             close();
         });
 
-        FormLayout formFilterStudent = new FormLayout();
-        formFilterStudent.setWidth("315px");
-        //formFilterStudent.addComponent(inputFilterStudentFirstName);
-//        formFilterStudent.addComponent(inputFilterStudentMiddleName);
-        formFilterStudent.addComponent(inputFilterStudentLastName);
-        formFilterStudent.addComponent(selectGroup);
-        HorizontalLayout buttonPlace = new HorizontalLayout();
-        buttonPlace.addComponent(getOkButton());
-        buttonPlace.addComponent(getCancelButton());
-        formFilterStudent.addComponent(buttonPlace);
-        filterContent.addComponent(formFilterStudent);
-    }
+        FormLayout formAddStudent = new FormLayout();
+        formAddStudent.setWidth("315px");
 
-    public StudentFilterModalWindow(String name, Table table) {
-        super(name, false);
-        this.table = table;
-        init();
+
+        formAddStudent.addComponent(lastName);
+        formAddStudent.addComponent(selectGroup);
+
+        HorizontalLayout buttonPlace = new HorizontalLayout();
+        buttonPlace.addComponent(okButton);
+        buttonPlace.addComponent(cancelButton);
+        formAddStudent.addComponent(buttonPlace);
+        modalContent.addComponent(formAddStudent);
     }
 
     @Override
     public void add() {
-
         StudentView filter;
         if (selectGroup.getValue() == null) {
-            filter = new StudentView(null, null, null, inputFilterStudentLastName.getValue(), null, null, null);
+            filter = new StudentView(null, null, null, lastName.getValue(), null, null, null);
         } else {
-            filter = new StudentView(null, null, null, inputFilterStudentLastName.getValue(), null, null, Integer.parseInt(selectGroup.getItemCaption(selectGroup.getValue())));
+            filter = new StudentView(null, null, null, lastName.getValue(), null, null, Integer.parseInt(selectGroup.getItemCaption(selectGroup.getValue())));
         }
         List<StudentView> students = Lists.newArrayList();
         try {
@@ -121,22 +109,5 @@ public class StudentFilterModalWindow extends BasicModalWindow {
             Notification.show("Результат фильтра ничего не вернул!");
         }
 
-    }
-
-    @Override
-    public boolean update() {
-        return true;
-    }
-
-    @Override
-    protected void enableValidation() {
-        inputFilterStudentLastName.setValidationVisible(true);
-        inputFilterStudentLastName.validate();
-        inputFilterStudentLastName.commit();
-    }
-
-    @Override
-    protected void disableValidation() {
-        inputFilterStudentLastName.setValidationVisible(false);
     }
 }

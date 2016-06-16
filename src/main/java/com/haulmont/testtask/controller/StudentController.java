@@ -90,7 +90,11 @@ public class StudentController {
     public static List<StudentView> filter(StudentView filter) throws ControllerCriticalException, ControllerException {
         try {
             List<Student> students = ((StudentDAO) HandlerDAO.getDAO(Student.class)).filter(filter.getLastName(), filter.getNumberGroup());
-            return StudentConverter.studentToView(students, StudentConverter::newStudentView);
+            Map<Long, Integer> map = ((StudentDAO) HandlerDAO.getDAO(Student.class)).selectNumberGroupStudents(students);
+            List<StudentView> views = StudentConverter.studentToView(students, StudentConverter::newStudentView);
+            views.stream().forEach(r -> r.setNumberGroup(map.get(r.getId())));
+            return views;
+
         } catch (DAOCriticalException e) {
             //e.printStackTrace();
             throw new ControllerCriticalException("", e);

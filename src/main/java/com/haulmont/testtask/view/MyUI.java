@@ -1,7 +1,7 @@
 package com.haulmont.testtask.view;
 
-import com.haulmont.testtask.view.component.GroupUI;
-import com.haulmont.testtask.view.component.StudentUI;
+import com.haulmont.testtask.view.component.layout.GroupLayout;
+import com.haulmont.testtask.view.component.layout.StudentLayout;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.annotations.Widgetset;
@@ -29,19 +29,17 @@ public class MyUI extends UI {
         layout.setHeight(null);
         layout.setWidth("100%");
 
-        //Создадим табы
         TabSheet tabsheet = new TabSheet();
         layout.addComponent(tabsheet);
 
-        //Подеключим соответствующие лейауты
-        Component studentTab = StudentUI.studentPage();
-        Component groupTab = GroupUI.groupPage();
+        Component studentTab = new StudentLayout("Студенты");
+        Component groupTab = new GroupLayout("Группы");
 
         studentTab.setHeight("100%");
         groupTab.setHeight("100%");
 
-        tabsheet.addTab(groupTab, GroupUI.getTabCaption());
-        tabsheet.addTab(studentTab, StudentUI.getTabCaption());
+        tabsheet.addTab(groupTab, groupTab.getCaption());
+        tabsheet.addTab(studentTab, studentTab.getCaption());
 
         tabsheet.addSelectedTabChangeListener(e -> {
             TabSheet tabSheet = e.getTabSheet();
@@ -52,7 +50,7 @@ public class MyUI extends UI {
             if(caption.equals("Группы")){
 
             }else if(caption.equals("Студенты")){
-
+                ((StudentLayout)tabSheet.getSelectedTab()).refresh();
             }
         });
 

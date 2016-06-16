@@ -19,7 +19,7 @@ import java.util.Map;
 public class StudentDAO<E extends Entity, T extends Student> extends AbstractDAO<E, T> implements DAO<E, T> {
 
     public Map<Long, Integer> selectNumberGroupStudents(List<T> list) throws DAOCriticalException, DAOException {//это для selectAll
-        StringBuilder sql = new StringBuilder("SELECT STUDENTS.ID AS ID, GROUPS.NUMBER AS NUMBER FROM STUDENTS JOIN GROUPS ON STUDENTS.GROUP_ID = GROUPS.ID");
+        StringBuilder sql = new StringBuilder("SELECT STUDENTS.ID AS ID, GROUPS.NUMBER AS NUMBER FROM STUDENTS JOIN GROUPS ON STUDENTS.GROUP_ID = GROUPS.ID ");
         Map<Long, Integer> map = Maps.newHashMap();
         if (list.size() > 0) {
             sql.append("WHERE STUDENTS.ID IN (");
