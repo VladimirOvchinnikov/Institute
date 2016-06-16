@@ -10,22 +10,22 @@ public class GroupView implements ViewEntity {
     private Integer number;
     private String faculty;
 
-    public GroupView(Long id, Integer number, String faculty){
+    public GroupView(Long id, Integer number, String faculty) {
         this.id = id;
         this.number = number;
         this.faculty = faculty;
     }
 
-    public GroupView(Long id){
-        this.id =id;
+    public GroupView(Long id) {
+        this.id = id;
     }
 
-    public GroupView(Integer number, String faculty){
+    public GroupView(Integer number, String faculty) {
         this.number = number;
         this.faculty = faculty;
     }
 
-    public GroupView(){
+    public GroupView() {
     }
 
     @Override

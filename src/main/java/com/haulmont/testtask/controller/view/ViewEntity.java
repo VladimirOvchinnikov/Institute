@@ -6,5 +6,6 @@ package com.haulmont.testtask.controller.view;
 public interface ViewEntity {
 
     public Long getId();
+
     public void setId(Long id);
 }

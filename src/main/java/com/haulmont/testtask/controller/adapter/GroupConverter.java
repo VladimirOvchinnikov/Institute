@@ -27,11 +27,11 @@ public class GroupConverter {
         return studentView.stream().map(predicate::apply).collect(Collectors.toList());
     }
 
-    public static Group newGrpoup(GroupView view){
-        return new Group(view.getId(), view.getNumber(),view.getFaculty());
+    public static Group newGrpoup(GroupView view) {
+        return new Group(view.getId(), view.getNumber(), view.getFaculty());
     }
 
-    public static GroupView newGroupView(Group group){
-        return new GroupView(group.getId(), group.getNumber(),group.getFaculty());
+    public static GroupView newGroupView(Group group) {
+        return new GroupView(group.getId(), group.getNumber(), group.getFaculty());
     }
 }

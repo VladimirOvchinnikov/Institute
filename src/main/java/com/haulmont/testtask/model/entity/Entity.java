@@ -6,5 +6,6 @@ package com.haulmont.testtask.model.entity;
 public interface Entity {
 
     public Long getId();
+
     public void setId(Long id);
 }

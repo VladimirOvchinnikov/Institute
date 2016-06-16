@@ -2,7 +2,6 @@ package com.haulmont.testtask.view.component.layout;
 
 import com.google.gwt.thirdparty.guava.common.collect.Lists;
 import com.haulmont.testtask.controller.GroupController;
-import com.haulmont.testtask.controller.exception.ControllerCriticalException;
 import com.haulmont.testtask.controller.exception.ControllerException;
 import com.haulmont.testtask.controller.view.GroupView;
 import com.haulmont.testtask.view.component.modal.window.add.AddGroupModalWindow;
@@ -26,9 +25,9 @@ public class GroupLayout extends BasicLayout {
 
     @Override
     protected void delete() {
-        List<GroupView> listDelete = Lists.newArrayList();
-        listDelete.add(new GroupView((Long) table.getValue()));
         try {
+            List<GroupView> listDelete = Lists.newArrayList();
+            listDelete.add(new GroupView((Long) table.getValue()));
             if (GroupController.delete(listDelete) == 0) {
                 Notification.show("Не удалось удалить группу. В группе еще есть студенты!");
             } else {
@@ -37,26 +36,18 @@ public class GroupLayout extends BasicLayout {
                 }
             }
         } catch (ControllerException e) {
-            e.printStackTrace();
-        } catch (ControllerCriticalException e) {
-            e.printStackTrace();
+            Notification.show(e.getMessage());
         }
-        /*} catch (SQLException e) {
-            e.printStackTrace();
-            Notification.show("SQL Error");
-        } catch (DatabaseException e) {
-            Notification.show("Critical error");
-        }*/
     }
 
     @Override
-    protected Window newEditWindow() {
+    protected Window openEditWindow() {
         EditGroupModalWindow window = new EditGroupModalWindow("Добавление группы", table);
         return window;
     }
 
     @Override
-    protected Window newAddWindow() {
+    protected Window openAddWindow() {
         AddGroupModalWindow window = new AddGroupModalWindow("Редактирование группы", table);
         return window;
     }
@@ -64,6 +55,7 @@ public class GroupLayout extends BasicLayout {
     @Override
     public void refresh() {
         try {
+            table.removeAllItems();
             List<GroupView> groups = GroupController.select(Lists.newArrayList());
             for (GroupView group : groups) {
                 table.addItem(new Object[]{
@@ -72,9 +64,7 @@ public class GroupLayout extends BasicLayout {
                 }, group.getId());
             }
         } catch (ControllerException e) {
-            e.printStackTrace();
-        } catch (ControllerCriticalException e) {
-            e.printStackTrace();
+            Notification.show(e.getMessage());
         }
     }
 }

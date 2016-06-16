@@ -1,5 +1,7 @@
 package com.haulmont.testtask.view;
 
+import com.haulmont.testtask.controller.DatabaseController;
+import com.haulmont.testtask.controller.exception.ControllerException;
 import com.haulmont.testtask.view.component.layout.GroupLayout;
 import com.haulmont.testtask.view.component.layout.StudentLayout;
 import com.vaadin.annotations.Theme;
@@ -12,11 +14,11 @@ import com.vaadin.ui.*;
 import javax.servlet.annotation.WebServlet;
 
 /**
- * This UI is the application entry point. A UI may either represent a browser window 
+ * This UI is the application entry point. A UI may either represent a browser window
  * (or tab) or some part of a html page where a Vaadin application is embedded.
  * <p>
- * The UI is initialized using {@link #init(VaadinRequest)}. This method is intended to be 
- * overridden to add component to the user interface and initialize non-component functionality.
+ * The UI is initialized using {@link #init(VaadinRequest)}. This method is intended to be
+ * overridden to action component to the user interface and initialize non-component functionality.
  */
 @Theme("mytheme")
 @Widgetset("com.haulmont.MyAppWidgetset")
@@ -25,36 +27,42 @@ public class MyUI extends UI {
     @Override
     protected void init(VaadinRequest vaadinRequest) {
 
-        final VerticalLayout layout = new VerticalLayout();
-        layout.setHeight(null);
-        layout.setWidth("100%");
+        try {
+            DatabaseController.openConnect();
 
-        TabSheet tabsheet = new TabSheet();
-        layout.addComponent(tabsheet);
+            final VerticalLayout layout = new VerticalLayout();
+            layout.setHeight(null);
+            layout.setWidth("100%");
 
-        Component studentTab = new StudentLayout("Студенты");
-        Component groupTab = new GroupLayout("Группы");
+            TabSheet tabsheet = new TabSheet();
+            layout.addComponent(tabsheet);
 
-        studentTab.setHeight("100%");
-        groupTab.setHeight("100%");
+            Component studentTab = new StudentLayout("Студенты");
+            Component groupTab = new GroupLayout("Группы");
 
-        tabsheet.addTab(groupTab, groupTab.getCaption());
-        tabsheet.addTab(studentTab, studentTab.getCaption());
+            studentTab.setHeight("100%");
+            groupTab.setHeight("100%");
 
-        tabsheet.addSelectedTabChangeListener(e -> {
-            TabSheet tabSheet = e.getTabSheet();
+            tabsheet.addTab(groupTab, groupTab.getCaption());
+            tabsheet.addTab(studentTab, studentTab.getCaption());
 
-            Layout tab = (Layout) tabSheet.getSelectedTab();
+            tabsheet.addSelectedTabChangeListener(e -> {
+                TabSheet tabSheet = e.getTabSheet();
 
-            String caption = tabSheet.getTab(tab).getCaption();
-            if(caption.equals("Группы")){
+                Layout tab = (Layout) tabSheet.getSelectedTab();
 
-            }else if(caption.equals("Студенты")){
-                ((StudentLayout)tabSheet.getSelectedTab()).refresh();
-            }
-        });
+                String caption = tabSheet.getTab(tab).getCaption();
+                if (caption.equals("Группы")) {
 
-        setContent(layout);
+                } else if (caption.equals("Студенты")) {
+                    ((StudentLayout) tabSheet.getSelectedTab()).refresh();
+                }
+            });
+
+            setContent(layout);
+        } catch (ControllerException e) {
+            Notification.show(e.getMessage());
+        }
     }
 
     @WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)

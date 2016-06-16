@@ -19,27 +19,22 @@ public class InitializtionDB {
     //private static String name1 = "create_table.script";
     //private static String name2 = "insert_test_data.script";
 
-    public static void init(String nameFile){
-        File file = new File(PATH + nameFile);
+    public static void init() throws DatabaseException {
+        File file = new File(PATH + "create_table.script");
         StringBuilder script = new StringBuilder();
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String s = null;
             while ((s = br.readLine()) != null) {
                 script.append(s);
             }
-        } catch (IOException ioe) {
-            System.err.println("Error " + ioe.getMessage());
-            ioe.printStackTrace();
-        }
-        try {
             ConnectDB.getInstance();
             try (Statement statement = ConnectDB.getInstance().getConnection().createStatement()) {
                 statement.execute(script.toString());
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
-        } catch (DatabaseException e) {
-            e.printStackTrace();
+        } catch (DatabaseException | SQLException e) {
+            throw new DatabaseException(e);
+        } catch (IOException ioe) {
+            throw new DatabaseException("ERROR not founded init file create_table.script");
         }
     }
 }

@@ -7,11 +7,11 @@ import com.vaadin.ui.HorizontalLayout;
  * Created by Leon on 15.06.2016.
  */
 public class ButtonLayout extends HorizontalLayout {
-    private Button addButton ;
-    private Button editButton ;
+    private Button addButton;
+    private Button editButton;
     private Button deleteButton;
 
-    public ButtonLayout(){
+    public ButtonLayout() {
         super();
         addButton = new Button("Добавить");
         editButton = new Button("Редактировать");
@@ -26,7 +26,7 @@ public class ButtonLayout extends HorizontalLayout {
         deleteButton.setVisible(false);
     }
 
-    public void addButton(Button button){
+    public void addButton(Button button) {
         addComponent(button);
     }
 

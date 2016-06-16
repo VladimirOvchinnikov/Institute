@@ -1,7 +1,6 @@
 package com.haulmont.testtask.model.dao;
 
 
-import com.haulmont.testtask.model.dao.exception.DAOCriticalException;
 import com.haulmont.testtask.model.dao.exception.DAOException;
 import com.haulmont.testtask.model.entity.Entity;
 import com.haulmont.testtask.model.entity.Group;
@@ -17,38 +16,33 @@ public class HandlerDAO {
     private static final GroupDAO groupDAO = new GroupDAO();
     private static final StudentDAO studentDAO = new StudentDAO();
 
-    public static DAO getDAO(Class clazz) throws DAOCriticalException {
+    public static DAO getDAO(Class clazz) throws DAOException {
         return check(clazz);
     }
 
-    public static StudentDAO getStudentDAO(){
-        return studentDAO;
-    }
-
-    public static List select(List list, Class clazz) throws DAOCriticalException, DAOException {
+    public static List select(List list, Class clazz) throws DAOException {
         return check(clazz).select(list);
     }
 
-    public static int delete(List entities, Class clazz) throws DAOCriticalException, DAOException {
+    public static int delete(List entities, Class clazz) throws DAOException {
         return check(clazz).delete(entities);
     }
 
-    public static boolean update(Entity entity) throws DAOCriticalException, DAOException {
+    public static boolean update(Entity entity) throws DAOException {
         return check(entity.getClass()).update(entity);
     }
 
-    public static Long insert(Entity entity) throws DAOCriticalException, DAOException {
+    public static Long insert(Entity entity) throws DAOException {
         return check(entity.getClass()).insert(entity);
     }
 
-    private static DAO check(Class clazz) throws DAOCriticalException {
+    private static DAO check(Class clazz) throws DAOException {
         if (clazz.equals(Student.class)) {
             return studentDAO;
         } else if (clazz.equals(Group.class)) {
             return groupDAO;
         } else {
-            //return null;//throw
-            throw new DAOCriticalException("Unkonw DAO");
+            throw new DAOException("Unknown DAO " + clazz.getName());
         }
     }
 

@@ -1,7 +1,5 @@
 package com.haulmont.testtask.model.entity;
 
-import com.haulmont.testtask.controller.view.GroupView;
-
 /**
  * Created by ovchinnikov on 10.06.2016.
  */
@@ -11,28 +9,22 @@ public class Group implements Entity {
     private Integer number;
     private String faculty;
 
-    public Group(){
+    public Group() {
 
     }
 
-    public Group(Long id, Integer number, String faculty){
+    public Group(Long id, Integer number, String faculty) {
         this.id = id;
         this.number = number;
         this.faculty = faculty;
     }
 
-    public Group( Integer number, String faculty){
+    public Group(Integer number, String faculty) {
         this.number = number;
         this.faculty = faculty;
     }
 
-    public Group(GroupView view){
-        id = view.getId();
-        number = view.getNumber();
-        faculty = view.getFaculty();
-    }
-
-    public Group(Long id){
+    public Group(Long id) {
         this.id = id;
     }
 

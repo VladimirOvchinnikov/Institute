@@ -2,14 +2,16 @@ package com.haulmont.testtask.model.dao;
 
 import com.google.gwt.thirdparty.guava.common.collect.Lists;
 import com.google.gwt.thirdparty.guava.common.collect.Maps;
-import com.haulmont.testtask.model.dao.exception.DAOCriticalException;
 import com.haulmont.testtask.model.dao.exception.DAOException;
-import com.haulmont.testtask.model.db.exception.DatabaseException;
 import com.haulmont.testtask.model.db.ConnectDB;
+import com.haulmont.testtask.model.db.exception.DatabaseException;
 import com.haulmont.testtask.model.entity.Entity;
 import com.haulmont.testtask.model.entity.Student;
 
-import java.sql.*;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +20,7 @@ import java.util.Map;
  */
 public class StudentDAO<E extends Entity, T extends Student> extends AbstractDAO<E, T> implements DAO<E, T> {
 
-    public Map<Long, Integer> selectNumberGroupStudents(List<T> list) throws DAOCriticalException, DAOException {//это для selectAll
+    public Map<Long, Integer> selectNumberGroupStudents(List<T> list) throws DAOException {
         StringBuilder sql = new StringBuilder("SELECT STUDENTS.ID AS ID, GROUPS.NUMBER AS NUMBER FROM STUDENTS JOIN GROUPS ON STUDENTS.GROUP_ID = GROUPS.ID ");
         Map<Long, Integer> map = Maps.newHashMap();
         if (list.size() > 0) {
@@ -42,17 +44,13 @@ public class StudentDAO<E extends Entity, T extends Student> extends AbstractDAO
             }
             return map;
         } catch (SQLException e) {
-//            e.printStackTrace();
-//            return map;
-            throw new DAOException("DAOException: selectNumberGroupStudents " + this.getClass(), e);
+            throw new DAOException("SQL ERROR: selectNumberGroupStudents " + this.getClass());
         } catch (DatabaseException e) {
-//            e.printStackTrace();
-//            return map;
-            throw new DAOCriticalException("DAOCriticalException: selectNumberGroupStudents" + this.getClass() + e.getMessage(), e);
+            throw new DAOException(e);
         }
     }
 
-    public Map<Long, Integer> selectDistinctNumberGroup() throws DAOException, DAOCriticalException {//это для выбора
+    public Map<Long, Integer> selectDistinctNumberGroup() throws DAOException {
         Map<Long, Integer> map = Maps.newHashMap();
         try (PreparedStatement preparedStatement = ConnectDB.getInstance().getConnection().prepareStatement("SELECT ID, NUMBER FROM GROUPS")) {
             try (ResultSet rs = preparedStatement.executeQuery()) {
@@ -62,13 +60,9 @@ public class StudentDAO<E extends Entity, T extends Student> extends AbstractDAO
             }
             return map;
         } catch (SQLException e) {
-//            e.printStackTrace();
-//            return map;
-            throw new DAOException("DAOException: selectDistinctNumberGroup " + this.getClass(), e);
+            throw new DAOException("SQL ERROR: selectDistinctNumberGroup " + this.getClass());
         } catch (DatabaseException e) {
-//            e.printStackTrace();
-//            return map;
-            throw new DAOCriticalException("DAOCriticalException: selectDistinctNumberGroup" + this.getClass() + e.getMessage(), e);
+            throw new DAOException(e);
         }
     }
 
@@ -98,7 +92,7 @@ public class StudentDAO<E extends Entity, T extends Student> extends AbstractDAO
             student.setGroupId(rs.getLong("group_id"));
             return student;
         } catch (SQLException e) {
-            throw new DAOException("wrong data for builder object " + this.getClass() + e.getMessage(), e);
+            throw new DAOException(" method getEntity ");
         }
     }
 
@@ -127,7 +121,7 @@ public class StudentDAO<E extends Entity, T extends Student> extends AbstractDAO
             ps.setLong(5, obj.getGroupId());
             ps.setLong(6, obj.getId());
         } catch (SQLException e) {
-            throw new DAOException("wrong set data for update " + this.getClass() + e.getMessage(), e);
+            throw new DAOException(" method setParametersUpdate");
         }
     }
 
@@ -145,11 +139,12 @@ public class StudentDAO<E extends Entity, T extends Student> extends AbstractDAO
             ps.setDate(4, new Date(obj.getBirthDay().getTime()));
             ps.setLong(5, obj.getGroupId());
         } catch (SQLException e) {
-            throw new DAOException("wrong set data for insert " + this.getClass() + e.getMessage(), e);
+//            throw new DAOException("wrong set data for insert " + this.getClass() + e.getMessage(), e);
+            throw new DAOException(" method setParametersInsert");
         }
     }
 
-    public List<Student> filter(String filterLastName, Integer filterNumberGroup) throws DAOException, DAOCriticalException {
+    public List<Student> filter(String filterLastName, Integer filterNumberGroup) throws DAOException {
         StringBuilder sql = new StringBuilder("SELECT * FROM STUDENTS JOIN GROUPS ON STUDENTS.GROUP_ID = GROUPS.ID WHERE ");//"STUDENTS.LAST_NAME = ? AND GROUPS.NUMBER = ?";
         List<Student> students = Lists.newArrayList();
         if (!filterLastName.isEmpty() && filterNumberGroup != null) {
@@ -158,7 +153,7 @@ public class StudentDAO<E extends Entity, T extends Student> extends AbstractDAO
             sql.append("STUDENTS.LAST_NAME = ?;");
         } else if (filterNumberGroup != null) {
             sql.append("GROUPS.NUMBER = ?;");
-        }else {
+        } else {
             return students;
         }
 
@@ -180,11 +175,9 @@ public class StudentDAO<E extends Entity, T extends Student> extends AbstractDAO
             }
             return students;
         } catch (SQLException e) {
-            //e.printStackTrace();
-            throw new DAOException("wrong set data for filter " + this.getClass() + e.getMessage(), e);
+            throw new DAOException("SQL ERROR: filter " + this.getClass());
         } catch (DatabaseException e) {
-            //e.printStackTrace();
-            throw new DAOCriticalException("DAOCriticalException: filter " + this.getClass() + e.getMessage(), e);
+            throw new DAOException(e);
         }
     }
 }

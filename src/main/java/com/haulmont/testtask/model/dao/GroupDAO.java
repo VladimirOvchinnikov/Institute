@@ -36,8 +36,7 @@ public class GroupDAO<E extends Entity, T extends Group> extends AbstractDAO<E, 
             group.setFaculty(rs.getString("faculty"));
             return (T) group;
         } catch (SQLException e) {
-            //e.printStackTrace();
-            throw new DAOException("wrong data for builder object " + this.getClass() + e.getMessage(), e);
+            throw new DAOException(" method getEntity ");
         }
     }
 
@@ -63,8 +62,7 @@ public class GroupDAO<E extends Entity, T extends Group> extends AbstractDAO<E, 
             ps.setString(2, t.getFaculty());
             ps.setLong(3, t.getId());
         } catch (SQLException e) {
-//            e.printStackTrace();
-            throw new DAOException("wrong set data for update " + this.getClass() + e.getMessage(), e);
+            throw new DAOException(" method setParametersUpdate");
         }
     }
 
@@ -79,7 +77,7 @@ public class GroupDAO<E extends Entity, T extends Group> extends AbstractDAO<E, 
             ps.setInt(1, t.getNumber());
             ps.setString(2, t.getFaculty());
         } catch (SQLException e) {
-            throw new DAOException("wrong set data for insert " + this.getClass() + e.getMessage(), e);
+            throw new DAOException(" method setParametersInsert");
         }
     }
 }

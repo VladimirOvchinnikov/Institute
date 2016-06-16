@@ -27,11 +27,11 @@ public class StudentConverter {
         return studentView.stream().map(predicate::apply).collect(Collectors.toList());
     }
 
-    public static Student newStudent(StudentView view){
+    public static Student newStudent(StudentView view) {
         return new Student(view.getId(), view.getFirstName(), view.getMiddleName(), view.getLastName(), view.getBirthDay(), view.getGroupId());
     }
 
-    public static StudentView newStudentView(Student student){
+    public static StudentView newStudentView(Student student) {
         return new StudentView(student.getId(), student.getFirstName(), student.getMiddleName(), student.getLastName(), student.getBirthDay(), student.getGroupId());
     }
 }

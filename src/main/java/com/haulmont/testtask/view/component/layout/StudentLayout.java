@@ -2,7 +2,6 @@ package com.haulmont.testtask.view.component.layout;
 
 import com.google.gwt.thirdparty.guava.common.collect.Lists;
 import com.haulmont.testtask.controller.StudentController;
-import com.haulmont.testtask.controller.exception.ControllerCriticalException;
 import com.haulmont.testtask.controller.exception.ControllerException;
 import com.haulmont.testtask.controller.view.StudentView;
 import com.haulmont.testtask.view.component.modal.window.add.AddStudentModalWindow;
@@ -35,65 +34,52 @@ public class StudentLayout extends BasicLayout {
         table.addContainerProperty("Дата рождения", Date.class, null);
         table.addContainerProperty("Группа", Integer.class, null);
 
-       refresh();
+        refresh();
     }
 
     @Override
     protected void delete() {
-        Long studentID = (Long) table.getValue();
         try {
-            StudentView student = new StudentView(studentID);
             List<StudentView> students = Lists.newArrayList();
-            students.add(student);
+            students.add(new StudentView((Long) table.getValue()));
             if (StudentController.delete(students) == 0) {
                 Notification.show("Не удалось удалить студента");
             } else {
                 table.removeItem(table.getValue());
             }
-        } catch (ControllerCriticalException e) {
-            e.printStackTrace();
         } catch (ControllerException e) {
-            e.printStackTrace();
+            Notification.show(e.getMessage());
         }
-//        } catch (SQLException e) {
-//            Notification.show("SQL Error");
-//        } catch (DatabaseException e) {
-//            Notification.show("Critical error");
-//        }
     }
 
     @Override
-    protected Window newEditWindow() {
+    protected Window openEditWindow() {
         EditStudentModalWindow window = new EditStudentModalWindow("Редактирование студента", table);
         return window;
 
     }
 
     @Override
-    protected Window newAddWindow() {
+    protected Window openAddWindow() {
         AddStudentModalWindow window = new AddStudentModalWindow("Добавление студента", table);
         return window;
     }
 
     @Override
     public void refresh() {
-        table.removeAllItems();
-        List<StudentView> students = Lists.newArrayList();
         try {
-            students = StudentController.select(students);
+            table.removeAllItems();
+            List<StudentView> students = StudentController.select(Lists.newArrayList());
+            for (StudentView student : students) {
+                table.addItem(new Object[]{student.getFirstName(), student.getLastName(), student.getMiddleName(),
+                        student.getBirthDay(), student.getNumberGroup()}, student.getId());
+            }
         } catch (ControllerException e) {
-            e.printStackTrace();
-        } catch (ControllerCriticalException e) {
-            e.printStackTrace();
-        }
-
-        for (StudentView student : students) {
-            table.addItem(new Object[]{student.getFirstName(), student.getLastName(), student.getMiddleName(),
-                    student.getBirthDay(), student.getNumberGroup()}, student.getId());
+            Notification.show(e.getMessage());
         }
     }
 
-    private Window addFilter(){
+    private Window addFilter() {
         StudentFilterModalWindow window = new StudentFilterModalWindow("Фильтр студентов", table);
         return window;
     }

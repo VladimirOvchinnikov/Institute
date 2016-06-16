@@ -24,19 +24,17 @@ public abstract class BasicLayout extends VerticalLayout {
         table.setPageLength(0);
         table.setHeight("100%");
 
-
         buttonLayout.getEditButton().addClickListener(e -> {
-            UI.getCurrent().addWindow(newEditWindow());
+            UI.getCurrent().addWindow(openEditWindow());
         });
 
         buttonLayout.getAddButton().addClickListener(e -> {
-            UI.getCurrent().addWindow(newAddWindow());
+            UI.getCurrent().addWindow(openAddWindow());
         });
 
         buttonLayout.getDeleteButton().addClickListener(e -> {
             delete();
         });
-
 
         buttonLayout.getEditButton().setVisible(false);
         buttonLayout.getDeleteButton().setVisible(false);
@@ -60,7 +58,10 @@ public abstract class BasicLayout extends VerticalLayout {
     }
 
     abstract protected void delete();
-    abstract protected Window newEditWindow();
-    abstract protected Window newAddWindow();
+
+    abstract protected Window openEditWindow();
+
+    abstract protected Window openAddWindow();
+
     abstract public void refresh();
 }

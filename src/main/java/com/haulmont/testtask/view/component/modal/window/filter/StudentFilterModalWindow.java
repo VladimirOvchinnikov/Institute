@@ -2,7 +2,6 @@ package com.haulmont.testtask.view.component.modal.window.filter;
 
 import com.google.gwt.thirdparty.guava.common.collect.Lists;
 import com.haulmont.testtask.controller.StudentController;
-import com.haulmont.testtask.controller.exception.ControllerCriticalException;
 import com.haulmont.testtask.controller.exception.ControllerException;
 import com.haulmont.testtask.controller.view.StudentView;
 import com.haulmont.testtask.view.component.modal.window.BasicModalWindow;
@@ -36,10 +35,8 @@ public class StudentFilterModalWindow extends BasicModalWindow {
                 selectGroup.addItem(entry.getKey());
                 selectGroup.setItemCaption(entry.getKey(), String.valueOf(entry.getValue()));
             }
-        } catch (ControllerCriticalException e) {
-            e.printStackTrace();
-        } catch (ControllerException e) {
-            e.printStackTrace();
+        }  catch (ControllerException e) {
+            Notification.show(e.getMessage());
         }
 
         selectGroup.setCaption("Группа");
@@ -52,21 +49,21 @@ public class StudentFilterModalWindow extends BasicModalWindow {
         okButton.setCaption("Ok");
 
         cancelButton.addClickListener(e -> {
-            table.removeAllItems();
-
-            List<StudentView> students = Lists.newArrayList();
             try {
+                table.removeAllItems();
+
+                List<StudentView> students = Lists.newArrayList();
+
                 students = StudentController.select(students);
-            } catch (ControllerCriticalException e1) {
-                e1.printStackTrace();
+
+                for (StudentView student : students) {
+                    table.addItem(new Object[]{student.getFirstName(), student.getLastName(), student.getMiddleName(),
+                            student.getBirthDay(), student.getNumberGroup()}, student.getId());
+                }
+                close();
             } catch (ControllerException e1) {
-                e1.printStackTrace();
+                Notification.show(e1.getMessage());
             }
-            for (StudentView student : students) {
-                table.addItem(new Object[]{student.getFirstName(), student.getLastName(), student.getMiddleName(),
-                        student.getBirthDay(), student.getNumberGroup()}, student.getId());
-            }
-            close();
         });
 
         FormLayout formAddStudent = new FormLayout();
@@ -84,29 +81,28 @@ public class StudentFilterModalWindow extends BasicModalWindow {
     }
 
     @Override
-    public void add() {
-        StudentView filter;
-        if (selectGroup.getValue() == null) {
-            filter = new StudentView(null, null, null, lastName.getValue(), null, null, null);
-        } else {
-            filter = new StudentView(null, null, null, lastName.getValue(), null, null, Integer.parseInt(selectGroup.getItemCaption(selectGroup.getValue())));
-        }
-        List<StudentView> students = Lists.newArrayList();
+    public void action() {
         try {
-            students = StudentController.filter(filter);
-        } catch (ControllerCriticalException e) {
-            e.printStackTrace();
-        } catch (ControllerException e) {
-            e.printStackTrace();
-        }
-        if (students.size() > 0) {
-            table.removeAllItems();
-            for (StudentView student : students) {
-                table.addItem(new Object[]{student.getFirstName(), student.getLastName(), student.getMiddleName(),
-                        student.getBirthDay(), student.getNumberGroup()}, student.getId());
+            StudentView filter = null;
+            if (selectGroup.getValue() == null) {
+                filter = new StudentView(null, null, null, lastName.getValue(), null, null, null);
+            } else {
+                filter = new StudentView(null, null, null, lastName.getValue(), null, null,
+                        Integer.parseInt(selectGroup.getItemCaption(selectGroup.getValue())));
             }
-        } else {
-            Notification.show("Результат фильтра ничего не вернул!");
+            List<StudentView> students = StudentController.filter(filter);
+
+            if (students.size() > 0) {
+                table.removeAllItems();
+                for (StudentView student : students) {
+                    table.addItem(new Object[]{student.getFirstName(), student.getLastName(), student.getMiddleName(),
+                            student.getBirthDay(), student.getNumberGroup()}, student.getId());
+                }
+            } else {
+                Notification.show("Результат фильтра ничего не вернул!");
+            }
+        } catch (ControllerException e) {
+            Notification.show(e.getMessage());
         }
 
     }

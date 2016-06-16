@@ -15,14 +15,14 @@ public class StudentView implements ViewEntity {
     private Integer numberGroup;
     private Long groupId;
 
-    public StudentView(){
+    public StudentView() {
     }
 
-    public StudentView(Long id){
+    public StudentView(Long id) {
         this.id = id;
     }
 
-    public StudentView(Long id, String firstName, String middleName, String  lastName, Date birthDay,  Long groupId, Integer numberGroup){
+    public StudentView(Long id, String firstName, String middleName, String lastName, Date birthDay, Long groupId, Integer numberGroup) {
         this.id = id;
         this.firstName = firstName;
         this.middleName = middleName;
@@ -32,7 +32,7 @@ public class StudentView implements ViewEntity {
         this.groupId = groupId;
     }
 
-    public StudentView(Long id, String firstName, String middleName, String  lastName, Date birthDay,  Long groupId){
+    public StudentView(Long id, String firstName, String middleName, String lastName, Date birthDay, Long groupId) {
         this.id = id;
         this.firstName = firstName;
         this.middleName = middleName;
@@ -41,7 +41,7 @@ public class StudentView implements ViewEntity {
         this.groupId = groupId;
     }
 
-    public StudentView(String firstName, String middleName, String  lastName, Date birthDay, Long groupId, Integer numberGroup){
+    public StudentView(String firstName, String middleName, String lastName, Date birthDay, Long groupId, Integer numberGroup) {
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;

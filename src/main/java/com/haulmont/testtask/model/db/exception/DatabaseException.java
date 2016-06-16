@@ -9,6 +9,10 @@ public class DatabaseException extends Exception {
         super(e);
     }
 
+    public DatabaseException(String msg) {
+        super(msg);
+    }
+
     public DatabaseException(String msg, Exception e) {
         super(msg, e);
     }

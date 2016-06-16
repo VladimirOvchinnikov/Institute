@@ -17,14 +17,14 @@ public class Student implements Entity {
     private Long groupId;
 
 
-    public Student(){
+    public Student() {
     }
 
-    public Student(Long id){
+    public Student(Long id) {
         this.id = id;
     }
 
-    public Student(Long id, String firstName, String middleName, String lastName, Date birthDay, Long groupId){
+    public Student(Long id, String firstName, String middleName, String lastName, Date birthDay, Long groupId) {
         this.id = id;
         this.firstName = firstName;
         this.middleName = middleName;
@@ -33,7 +33,7 @@ public class Student implements Entity {
         this.groupId = groupId;
     }
 
-    public Student( String firstName, String middleName, String lastName, Date birthDay, Long groupId){
+    public Student(String firstName, String middleName, String lastName, Date birthDay, Long groupId) {
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
@@ -41,7 +41,7 @@ public class Student implements Entity {
         this.groupId = groupId;
     }
 
-    public Student(StudentView view){
+    public Student(StudentView view) {
         this.id = view.getId();
         this.firstName = view.getFirstName();
         this.middleName = view.getMiddleName();

@@ -1,7 +1,6 @@
 package com.haulmont.testtask.model.dao;
 
 import com.google.gwt.thirdparty.guava.common.collect.Lists;
-import com.haulmont.testtask.model.dao.exception.DAOCriticalException;
 import com.haulmont.testtask.model.dao.exception.DAOException;
 import com.haulmont.testtask.model.db.ConnectDB;
 import com.haulmont.testtask.model.db.exception.DatabaseException;
@@ -17,7 +16,8 @@ import java.util.stream.Collectors;
 public abstract class AbstractDAO<E extends Entity, T> implements DAO<E, T> {
 
     @Override
-    public List<T> select(List<E> entities) throws DAOException, DAOCriticalException {
+    public List<T> select(List<E> entities) throws DAOException {
+
         List<T> result = Lists.newArrayList();
         try (PreparedStatement preparedStatement = ConnectDB.getInstance().getConnection().prepareStatement(getTextQuerySelect(entities.size()))) {
             int i = 1;
@@ -33,19 +33,16 @@ public abstract class AbstractDAO<E extends Entity, T> implements DAO<E, T> {
                 }
                 return result;
             }
+
         } catch (SQLException e) {
-            //e.printStackTrace();
-            //return result;
-            throw new DAOException("DAOException: select " + e.getMessage(), e);
+            throw new DAOException("SQL ERROR: select " + getClass());
         } catch (DatabaseException e) {
-            //e.printStackTrace();
-            throw new DAOCriticalException("DAOCriticalException: select " + this.getClass() + " " + e.getMessage(), e);
-            //return result;
+            throw new DAOException(e);
         }
     }
 
     @Override
-    public int delete(List<E> entities) throws DAOCriticalException, DAOException {
+    public int delete(List<E> entities) throws DAOException {
         if (entities.size() == 0) {
             return 0;
         }
@@ -55,38 +52,30 @@ public abstract class AbstractDAO<E extends Entity, T> implements DAO<E, T> {
                 preparedStatement.setLong(i, entities.get(i - 1).getId());
             }
             return preparedStatement.executeUpdate();
-        } catch (DatabaseException de) {
-//            e1.printStackTrace();
-//            return -1;
-            throw new DAOCriticalException("DAOCriticalException: delete " + this.getClass() + " " + de.getMessage(), de);
+        } catch (DatabaseException e) {
+            throw new DAOException(e);
         } catch (SQLIntegrityConstraintViolationException e) {
             return 0;
         } catch (SQLException e1) {
-//            e1.printStackTrace();
-//            return -1;
-            throw new DAOException("DAOException: delete " + this.getClass() + " " + e1.getMessage(), e1);
+            throw new DAOException("SQL ERROR: delete " + getClass());
         }
     }
 
     @Override
-    public boolean update(T obj) throws DAOException, DAOCriticalException {
+    public boolean update(T obj) throws DAOException {
 
         try (PreparedStatement preparedStatement = ConnectDB.getInstance().getConnection().prepareStatement(getTextQueryUpdate())) {
             setParametersUpdate(preparedStatement, obj);
             return preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
-//            e.printStackTrace();
-//            return false;
-            throw new DAOException("DAOException: update " + this.getClass() + " " + e.getMessage(), e);
+            throw new DAOException("SQL ERROR: update " + getClass());
         } catch (DatabaseException e) {
-//            e.printStackTrace();
-//            return false;
-            throw new DAOCriticalException("DAOCriticalException: update " + this.getClass() + " " + e.getMessage(), e);
+            throw new DAOException(e);
         }
     }
 
     @Override
-    public Long insert(T obj) throws DAOException, DAOCriticalException {
+    public Long insert(T obj) throws DAOException {
         try (PreparedStatement preparedStatement = ConnectDB.getInstance().getConnection().prepareStatement(getTextQueryInsert(), Statement.RETURN_GENERATED_KEYS)) {
             setParametersInsert(preparedStatement, obj);
 
@@ -99,13 +88,9 @@ public abstract class AbstractDAO<E extends Entity, T> implements DAO<E, T> {
                 return rs.getLong(1);
             }
         } catch (SQLException e) {
-//            e.printStackTrace();
-//            return -1L;
-            throw new DAOException("DAOException: insert " + this.getClass() + " " + e.getMessage(), e);
+            throw new DAOException("SQL ERROR: insert " + getClass());
         } catch (DatabaseException e) {
-//            e.printStackTrace();
-//            return -1L;
-            throw new DAOCriticalException("DAOCriticalException: insert " + this.getClass() + " " + e.getMessage(), e);
+            throw new DAOException(e);
         }
     }
 

@@ -22,7 +22,7 @@ public abstract class BasicModalWindow extends Window {
 
         okButton = new Button("Добавить");
         okButton.addClickListener(e -> {
-            add();
+            action();
         });
         cancelButton = new Button("Отменить");
         cancelButton.addClickListener(e -> {
@@ -31,5 +31,5 @@ public abstract class BasicModalWindow extends Window {
         center();
     }
 
-    abstract public void add();
+    abstract public void action();
 }
